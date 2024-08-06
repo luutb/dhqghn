@@ -1,3 +1,4 @@
+// @ts-nocheck
 import * as React from "react";
 import {
   TableHead,
@@ -6,10 +7,20 @@ import {
   Checkbox,
   Box,
 } from "@mui/x-data-grid";
-
-function TableHeaderComponent({  style = "", headCells,numSelected,order,orderBy,onSelectAllClick,onRequestSort,rowCount }) {
+import { PieChart } from '@mui/x-charts/PieChart';
+import { FormControlLabel, Paper, Switch, Table, TableBody, TableContainer, TablePagination, TableSortLabel } from "../../node_modules/@mui/material/index";
+function TableHeaderComponent({
+  style = "",
+  headCells,
+  numSelected,
+  order,
+  orderBy,
+  onSelectAllClick,
+  onRequestSort,
+  rowCount,
+}) {
   return (
-    <TableHead className = {style}>
+    <TableHead className={style}>
       <TableRow>
         <TableCell padding="checkbox">
           <Checkbox
@@ -32,11 +43,11 @@ function TableHeaderComponent({  style = "", headCells,numSelected,order,orderBy
             <TableSortLabel
               active={orderBy === headCell.id}
               direction={orderBy === headCell.id ? order : "asc"}
-              onClick={createSortHandler(headCell.id)}
+              // onClick={createSortHandler(headCell.id)}
             >
               {headCell.label}
               {orderBy === headCell.id ? (
-                <Box component="span" sx={visuallyHidden}>
+                <Box component="span" >
                   {order === "desc" ? "sorted descending" : "sorted ascending"}
                 </Box>
               ) : null}
@@ -47,7 +58,9 @@ function TableHeaderComponent({  style = "", headCells,numSelected,order,orderBy
     </TableHead>
   );
 }
-function TableComponent({ TableHeader,handleChangePage,rows }) {
+function TableComponent({ tableHeader, handleChangePage, rows,visibleRows ,handleClick,isSelected}) {
+
+
   return (
     <Box sx={{ width: "100%" }}>
       <Paper sx={{ width: "100%", mb: 2 }}>
@@ -56,9 +69,9 @@ function TableComponent({ TableHeader,handleChangePage,rows }) {
           <Table
             sx={{ minWidth: 750 }}
             aria-labelledby="tableTitle"
-            size={dense ? "small" : "medium"}
+            size={"medium"}
           >
-            <TableHeader />
+            {tableHeader}
             <TableBody>
               {visibleRows.map((row, index) => {
                 const isItemSelected = isSelected(row.id);
@@ -99,7 +112,7 @@ function TableComponent({ TableHeader,handleChangePage,rows }) {
                   </TableRow>
                 );
               })}
-              {emptyRows > 0 && (
+              {/* {emptyRows > 0 && (
                 <TableRow
                   style={{
                     height: (dense ? 33 : 53) * emptyRows,
@@ -107,26 +120,23 @@ function TableComponent({ TableHeader,handleChangePage,rows }) {
                 >
                   <TableCell colSpan={6} />
                 </TableRow>
-              )}
+              )} */}
             </TableBody>
           </Table>
         </TableContainer>
         <TablePagination
-        //   rowsPerPageOptions={[10]}
+          //   rowsPerPageOptions={[10]}
           component="div"
           count={rows.length}
           rowsPerPage={10}
           page={page}
           onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
+          // onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </Paper>
-      <FormControlLabel
-        control={<Switch checked={dense} onChange={handleChangeDense} />}
-        label="Dense padding"
-      />
+
     </Box>
   );
 }
 
-export {TableComponent, TableHeaderComponent};
+export { TableComponent, TableHeaderComponent };
