@@ -6,10 +6,13 @@ import { styled, useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import MuiDrawer from "@mui/material/Drawer";
 import MuiAppBar from "@mui/material/AppBar";
+// @ts-ignore
 import Toolbar from "@mui/material/Toolbar";
 import List from "@mui/material/List";
 import CssBaseline from "@mui/material/CssBaseline";
+// @ts-ignore
 import Typography from "@mui/material/Typography";
+// @ts-ignore
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -28,7 +31,7 @@ const menus = [
   {
     id: 1,
     name: "Bảng điều khiển",
-    url: "/dashboard",
+    url: "/",
   },
   {
     id: 2,
@@ -94,8 +97,10 @@ const DrawerHeader = styled("div")(({ theme }) => ({
   ...theme.mixins.toolbar,
 }));
 
+// @ts-ignore
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== "open",
+// @ts-ignore
 })(({ theme, open }) => ({
   zIndex: theme.zIndex.drawer + 1,
   transition: theme.transitions.create(["width", "margin"], {
@@ -114,6 +119,7 @@ const AppBar = styled(MuiAppBar, {
 
 const Drawer = styled(MuiDrawer, {
   shouldForwardProp: (prop) => prop !== "open",
+// @ts-ignore
 })(({ theme, open }) => ({
   width: drawerWidth,
   flexShrink: 0,
@@ -142,8 +148,8 @@ export default function LayoutNavigation({ children }) {
   };
   const router = useRouter();
   return (
-    <Box sx={{ display: "flex" }}>
-      <CssBaseline />
+    <Box sx={{ display: "flex", width:"100%" }}>
+      {/* <CssBaseline /> */}
       {/* <AppBar position="fixed" open={open} className="bg-white w-[60px] left-0" >
         <IconButton
           color=""
@@ -162,6 +168,7 @@ export default function LayoutNavigation({ children }) {
         <DrawerHeader>
           {!open ? (
             <IconButton
+              // @ts-ignore
               color=""
               aria-label="open drawer"
               onClick={handleDrawerOpen}
@@ -213,9 +220,9 @@ export default function LayoutNavigation({ children }) {
           ))}
         </List>
       </Drawer>
-      <Box>
-        {" "}
-        <main className="flex min-h-screen flex-col items-center justify-between p-24">
+      <Box sx={{ display: "flex", width:"100%" }}>
+    
+        <main className="flex min-h-screen flex-col min-w-screen  items-center justify-between min-w-full">
           {children}
         </main>
       </Box>

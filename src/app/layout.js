@@ -12,10 +12,9 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className="w-full h-full">
-        {" "}
-        <main className="flex min-h-screen flex-col items-center bg-slate-100	">
+        <div className="flex min-h-screen min-w-screen flex-col min-w-full bg-slate-100	!p-0">
           {children}
-        </main>
+        </div>
       </body>
     </html>
   );
