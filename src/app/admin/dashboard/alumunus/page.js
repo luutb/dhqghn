@@ -39,7 +39,7 @@ const data = [
 
 export default function Home() {
   return (
-    <StudentTable columns={columns} data={data} onAddStudent={undefined} />
+    <StudentTable  />
   );
 }
 

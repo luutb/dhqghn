@@ -1,7 +1,8 @@
-// components/StudentTable.js
-"use client"
-import React, { useState } from 'react';
+// StudentList.js
+"use client";
+import React, { useEffect, useState } from "react";
 import {
+  IconButton,
   Table,
   TableBody,
   TableCell,
@@ -9,210 +10,209 @@ import {
   TableHead,
   TableRow,
   Paper,
-  IconButton,
-  Tooltip,
-  Typography,
-  Box,
-  Pagination,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Button,
   TextField,
-  Snackbar
-} from '@mui/material';
-import { Visibility, Edit, Delete, Download, Add, Upload } from '@mui/icons-material';
+  MenuItem,
+  Select,
+  InputLabel,
+  FormControl,
+  Divider,
+} from "@mui/material";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import DownloadIcon from "@mui/icons-material/Download";
+import axiosInstance from "@/axios/api-config";
+import { findStudent, liststudent, universitys } from "@/axios/endpoints";
 
-const StudentTable = ({ columns, data, onAddStudent }) => {
-  const rowsPerPage = 20;
-  const [page, setPage] = useState(1);
-  const [openAddDialog, setOpenAddDialog] = useState(false);
-  const [openUploadDialog, setOpenUploadDialog] = useState(false);
-  const [newStudent, setNewStudent] = useState({ studentId: '', fullName: '', birthYear: '', school: '', status: '' });
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
+const initialStudents = [
+  {
+    id: "S001",
+    fullName: "Nguyen Van A",
+    gender: "Nam",
+    address: "123 Đường ABC",
+    className: "10A1",
+    courseName: "Toán",
+    specialized: "KHTN",
+    school: "Trường A",
+    cohort: "20",
+  },
+  {
+    id: "S002",
+    fullName: "Tran Thi B",
+    gender: "Nữ",
+    address: "456 Đường DEF",
+    className: "10A2",
+    courseName: "Lý",
+    specialized: "XH",
+    school: "Trường B",
+    cohort: "19",
+  },
+  // Thêm dữ liệu sinh viên khác ở đây
+];
 
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
+// const schools = ['Trường A', 'Trường B', 'Trường C'];
+const cohorts = ["20", "19", "18"];
+
+const StudentList = () => {
+  const [students, setStudents] = useState(initialStudents);
+  const [schools, setSchools] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedSchool, setSelectedSchool] = useState(null);
+  const [selectedCohort, setSelectedCohort] = useState(null);
+  useEffect(() => {
+    axiosInstance.get(liststudent).then((response) => {
+      if (response && response.data && response.data.data) {
+        setStudents(response.data.data);
+      }
+    });
+  }, []);
+  useEffect(() => {
+    axiosInstance.get(universitys).then((response) => {
+      if (response && response.data && response.data.data) {
+        setSchools([...response.data.data]);
+      }
+    });
+  }, []);
+  const handleFind = () =>{
+    let body = {
+      nameStudent: searchTerm,
+      university: selectedSchool.name 
+    }
+    console.log("body",body)
+    axiosInstance.post(findStudent,body).then((response) =>{
+      if (response && response.data && response.data.data) {
+        setStudents([...response.data.data]);
+      }
+    })
+  }
+  const handleSearchChange = (event) => {
+    setSearchTerm(event.target.value);
   };
 
-  const handleAddStudent = () => {
-    onAddStudent(newStudent);
-    setNewStudent({ studentId: '', fullName: '', birthYear: '', school: '', status: '' });
-    setOpenAddDialog(false);
-    setSnackbarOpen(true);
+  const handleSchoolChange = (event) => {
+    if(event.target.value){
+      setSelectedSchool(event.target.value ?? "");
+    }
+  else{
+    setSelectedSchool("")
+  }
   };
 
-  const handleCloseSnackbar = () => {
-    setSnackbarOpen(false);
+  const handleCohortChange = (event) => {
+    setSelectedCohort(event.target.value);
   };
 
-  const paginatedData = data.slice((page - 1) * rowsPerPage, page * rowsPerPage);
+  // const filteredStudents = students.filter(
+  //   (student) =>
+  //     (student.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  //       student.id.toLowerCase().includes(searchTerm.toLowerCase())) &&
+  //     (selectedSchool ? student.school === selectedSchool : true) &&
+  //     (selectedCohort ? student.cohort === selectedCohort : true)
+  // );
 
   return (
-    <Box sx={{ p: 4, width: '100%', height: '100%' }}>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }} className ="bg-white py-2 px-1 rounded shadow">
-        <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold' }}>
-          Danh sách sinh viên
-        </Typography>
-        <Box>
-          <Tooltip title="Thêm sinh viên thủ công">
-            <IconButton color="primary" onClick={() => setOpenAddDialog(true)}>
-              <Add />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Nhập từ Excel">
-            <IconButton color="secondary" onClick={() => setOpenUploadDialog(true)}>
-              <Upload />
-            </IconButton>
-          </Tooltip>
-        </Box>
-      </Box>
-      <TableContainer component={Paper} elevation={3} sx={{ maxHeight: 'calc(100vh - 160px)', overflowY: 'auto' }}>
-        <Table stickyHeader>
+    <div className="p-6 bg-gray-50 min-h-screen w-full">
+      <h1 className="text-3xl font-bold mb-4 text-center text-gray-800">
+        Danh sách sinh viên
+      </h1>
+
+      <div className="mb-6 flex w-[70%] flex-wrap gap-4 bg-white">
+        <TextField
+          label="Tìm kiếm tên hoặc mã sinh viên"
+          variant="outlined"
+          value={searchTerm}
+          onChange={handleSearchChange}
+          className="flex-1 min-w-[200px]"
+          size="small"
+        />
+        <FormControl
+          variant="outlined"
+          className="flex-1 min-w-[200px]"
+          size="small"
+        >
+          <InputLabel>Trường</InputLabel>
+          <Select
+            value={selectedSchool}
+            onChange={handleSchoolChange}
+            label="Trường"
+          >
+            <MenuItem value="">
+              <em>Tất cả</em>
+            </MenuItem>
+            {schools.map((school) => (
+              <MenuItem key={school} value={school}>
+                {school.name}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <FormControl
+          variant="outlined"
+          className="flex-1 min-w-[200px]"
+          size="small"
+        >
+          <InputLabel>Khóa</InputLabel>
+          <Select
+            value={selectedCohort}
+            onChange={handleCohortChange}
+            label="Khóa"
+          >
+            <MenuItem value="">
+              <em>Tất cả</em>
+            </MenuItem>
+            {cohorts.map((cohort) => (
+              <MenuItem key={cohort} value={cohort}>
+                {cohort}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <button onClick={() =>{handleFind()}}>
+          <div className="w-[100px] bg-black rounded">Tìm kiếm</div>
+        </button>
+      </div>
+
+      <TableContainer component={Paper} className="shadow-lg">
+        <Table>
           <TableHead>
-            <TableRow>
-              {columns.map((col, index) => (
-                <TableCell key={index} align={col.align || 'left'} sx={{ fontWeight: 'bold', bgcolor: '#f5f5f5' }}>
-                  {col.header}
-                </TableCell>
-              ))}
+            <TableRow className="bg-gray-200">
+              <TableCell className="font-semibold">Mã sinh viên</TableCell>
+              <TableCell className="font-semibold">Tên sinh viên</TableCell>
+              <TableCell className="font-semibold">Giới tính</TableCell>
+              <TableCell className="font-semibold">Địa chỉ</TableCell>
+              <TableCell className="font-semibold">Ngành học</TableCell>
+              <TableCell className="font-semibold">Lớp học</TableCell>
+              <TableCell className="font-semibold">Trường</TableCell>
+              <TableCell className="font-semibold">Khóa</TableCell>
+              <TableCell className="font-semibold">Hành động</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {paginatedData.length > 0 ? (
-              paginatedData.map((row, rowIndex) => (
-                <TableRow key={rowIndex} sx={{ '&:nth-of-type(odd)': { bgcolor: '#f9f9f9' }, '&:hover': { bgcolor: '#f1f1f1' } }}>
-                  {columns.map((col, colIndex) => (
-                    <TableCell key={colIndex} align={col.align || 'left'} sx={{ fontSize: '0.875rem' }}>
-                      {col.accessor === 'actions' ? (
-                        <Box sx={{ display: 'flex', gap: 0.5 }}>
-                          <Tooltip title="Xem">
-                            <IconButton color="primary" size="small">
-                              <Visibility fontSize="small" />
-                            </IconButton>
-                          </Tooltip>
-                          <Tooltip title="Chỉnh sửa">
-                            <IconButton color="success" size="small">
-                              <Edit fontSize="small" />
-                            </IconButton>
-                          </Tooltip>
-                          <Tooltip title="Xóa">
-                            <IconButton color="error" size="small">
-                              <Delete fontSize="small" />
-                            </IconButton>
-                          </Tooltip>
-                          <Tooltip title="Tải xuống">
-                            <IconButton color="default" size="small">
-                              <Download fontSize="small" />
-                            </IconButton>
-                          </Tooltip>
-                        </Box>
-                      ) : (
-                        row[col.accessor]
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell colSpan={columns.length} align="center" sx={{ py: 3 }}>
-                  <Typography color="textSecondary">Không có dữ liệu</Typography>
+            {students.map((student) => (
+              <TableRow key={student.id} className="hover:bg-gray-100">
+                <TableCell>{student.id}</TableCell>
+                <TableCell>{student.fullName}</TableCell>
+                <TableCell>{student.gender}</TableCell>
+                <TableCell>{student.address}</TableCell>
+                <TableCell>{student.courseName}</TableCell>
+                <TableCell>{student.className}</TableCell>
+                <TableCell>{student.specialized}</TableCell>
+                <TableCell>{student.cohort}</TableCell>
+                <TableCell>
+                  <div className="flex space-x-2 justify-center">
+                    <IconButton color="primary">
+                      <VisibilityIcon />
+                    </IconButton>
+                    <IconButton color="secondary">
+                      <DownloadIcon />
+                    </IconButton>
+                  </div>
                 </TableCell>
               </TableRow>
-            )}
+            ))}
           </TableBody>
         </Table>
       </TableContainer>
-      <Box sx={{ mt: 2, display: 'flex', justifyContent: 'center' }}>
-        <Pagination
-          count={Math.ceil(data.length / rowsPerPage)}
-          page={page}
-          onChange={handleChangePage}
-          color="primary"
-        />
-      </Box>
-
-      {/* Thêm Sinh Viên Thủ Công */}
-      <Dialog open={openAddDialog} onClose={() => setOpenAddDialog(false)}>
-        <DialogTitle>Thêm Sinh Viên Thủ Công</DialogTitle>
-        <DialogContent>
-          <TextField
-            autoFocus
-            margin="dense"
-            label="Mã sinh viên"
-            type="text"
-            fullWidth
-            variant="outlined"
-            value={newStudent.studentId}
-            onChange={(e) => setNewStudent({ ...newStudent, studentId: e.target.value })}
-          />
-          <TextField
-            margin="dense"
-            label="Họ và tên"
-            type="text"
-            fullWidth
-            variant="outlined"
-            value={newStudent.fullName}
-            onChange={(e) => setNewStudent({ ...newStudent, fullName: e.target.value })}
-          />
-          <TextField
-            margin="dense"
-            label="Năm sinh"
-            type="number"
-            fullWidth
-            variant="outlined"
-            value={newStudent.birthYear}
-            onChange={(e) => setNewStudent({ ...newStudent, birthYear: e.target.value })}
-          />
-          <TextField
-            margin="dense"
-            label="Trường học"
-            type="text"
-            fullWidth
-            variant="outlined"
-            value={newStudent.school}
-            onChange={(e) => setNewStudent({ ...newStudent, school: e.target.value })}
-          />
-          <TextField
-            margin="dense"
-            label="Tình trạng"
-            type="text"
-            fullWidth
-            variant="outlined"
-            value={newStudent.status}
-            onChange={(e) => setNewStudent({ ...newStudent, status: e.target.value })}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpenAddDialog(false)}>Hủy</Button>
-          <Button onClick={handleAddStudent} variant="contained" color="primary">Thêm</Button>
-        </DialogActions>
-      </Dialog>
-
-      {/* Nhập từ Excel */}
-      <Dialog open={openUploadDialog} onClose={() => setOpenUploadDialog(false)}>
-        <DialogTitle>Nhập Sinh Viên Từ Excel</DialogTitle>
-        <DialogContent>
-          <Typography variant="body2">Chức năng này sẽ yêu cầu bạn tải lên file Excel.</Typography>
-          {/* Thêm mã để xử lý tệp Excel ở đây */}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpenUploadDialog(false)}>Đóng</Button>
-          <Button variant="contained" color="secondary">Tải lên</Button>
-        </DialogActions>
-      </Dialog>
-
-      {/* Snackbar thông báo khi thêm sinh viên thành công */}
-      <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={6000}
-        onClose={handleCloseSnackbar}
-        message="Thêm sinh viên thành công!"
-      />
-    </Box>
+    </div>
   );
 };
 
-export default StudentTable;
+export default StudentList;

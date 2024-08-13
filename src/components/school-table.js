@@ -16,7 +16,7 @@ const data = [
 
 function SchoolTable() {
   return (
-    <div className="p-4 max-w-4xl mx-auto bg-white border rounded">
+    <div className="p-4  bg-white border rounded">
       <Typography variant="h6" gutterBottom className="text-xl font-semibold mb-4">
         Danh Sách Trường và Số Lượng Sinh Viên
       </Typography>
