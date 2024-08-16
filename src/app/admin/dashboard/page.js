@@ -15,11 +15,11 @@ export default function Dashboard() {
           <div className="flex flex-row w-full border bg-white">
             <BarChart
               xAxis={[
-                { scaleType: "band", data: ["group A", "group B", "group C"] },
+                { scaleType: "band", data: ["ĐH Ngoại ngữ", "ĐH Luật", "ĐH Công nghệ"] },
               ]}
               series={[
-                { data: [4, 3, 5] },
-                { data: [1, 6, 3] },
+                { data: [9, 2, 5] },
+                { data: [1, 8, 5] },
               ]}
               width={1280}
               height={500}
