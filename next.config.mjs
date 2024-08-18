@@ -33,7 +33,7 @@ const nextConfig = {
      // Đường dẫn thực tế đến API bên ngoài
       },
       {
-        source: '/',            // Đường dẫn yêu cầu từ phía người dùng
+        source: '/bang-dieu-khien',            // Đường dẫn yêu cầu từ phía người dùng
         destination: '/admin/dashboard',    
          // Đường dẫn nội bộ của ứng dụng
       },
@@ -43,13 +43,38 @@ const nextConfig = {
       // Đường dẫn thực tế đến API bên ngoài
       },
       {
-        source: '/qlsv',            // Đường dẫn yêu cầu từ phía người dùng
+        source: '/quan-ly-sinh-vien',            // Đường dẫn yêu cầu từ phía người dùng
         destination: '/admin/dashboard/alumunus', 
              // Đường dẫn nội bộ của ứng dụng
       },
       {
-        source: '/qlgv',            // Đường dẫn yêu cầu từ phía người dùng
+        source: '/quan-ly-sinh-vien/:id',            // Đường dẫn yêu cầu từ phía người dùng
+        destination: '/admin/dashboard/alumunus/[id]?id=:id', 
+             // Đường dẫn nội bộ của ứng dụng
+      },
+      {
+        source: '/quan-ly-giang-vien',            // Đường dẫn yêu cầu từ phía người dùng
         destination: '/admin/dashboard/teachers', 
+             // Đường dẫn nội bộ của ứng dụng
+      },
+      {
+        source: '/quan-ly-thi',            // Đường dẫn yêu cầu từ phía người dùng
+        destination: '/admin/dashboard/courses', 
+             // Đường dẫn nội bộ của ứng dụng
+      },
+      {
+        source: '/quan-ly-thi/:id',            // Đường dẫn yêu cầu từ phía người dùng
+        destination: '/admin/dashboard/courses/[id]?id=:id', 
+             // Đường dẫn nội bộ của ứng dụng
+      },
+      {
+        source: '/quan-ly-lich-lam-viec',            // Đường dẫn yêu cầu từ phía người dùng
+        destination: '/admin/dashboard/calendar-daily', 
+             // Đường dẫn nội bộ của ứng dụng
+      },
+      {
+        source: '/sinh-vien',            // Đường dẫn yêu cầu từ phía người dùng
+        destination: '/user', 
              // Đường dẫn nội bộ của ứng dụng
       },
 

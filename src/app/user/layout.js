@@ -30,46 +30,25 @@ const drawerWidth = 240;
 const menus = [
   {
     id: 1,
-    name: "Bảng điều khiển",
-    url: "/bang-dieu-khien",
+    name: "Hồ sơ sinh viên",
+    url: "/ho-so-sinh-vien",
   },
   {
     id: 2,
-    name: "Quản lý sinh viên",
-    url: "/quan-ly-sinh-vien",
+    name: "Lịch sử học",
+    url: "/lich-su-hoc",
   },
   {
     id: 3,
-    name: "Quản lý giảng viên",
-    url: "/quan-ly-giang-vien",
+    name: "Tra cứu điểm thi",
+    url: "/tra-cuu-diem-thi",
   },
   {
     id: 4,
-    name: "Quản lý thi",
-    url: "/quan-ly-thi",
+    name: "Hỗ trợ",
+    url: "/ho-tro",
   },
-  {
-    id: 5,
-    name: "Thiết lập",
-    url: "/cai-dat",
-    item: [
-      {
-        id: 6,
-        name: "Cài đặt quyền",
-        url: "/cai-dat-quyen",
-      },
-      {
-        id: 7,
-        name: "Thiết lập",
-        url: "/thiet-lap",
-      },
-    ],
-  },
-  {
-    id: 8,
-    name: "Lịch làm việc",
-    url: "/quan-ly-lich-lam-viec",
-  },
+  
 ];
 
 const openedMixin = (theme) => ({

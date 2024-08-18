@@ -18,16 +18,19 @@ import { setLocalData, setToken } from "@/axios/handle-token";
 import { useRouter } from "next/navigation";
 import { Snackbar } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+import { useLoading } from "@/context/loading-context";
 export default function SiginPage() {
   const [showPassword, setShowPassword] = React.useState(false);
   const [account, setAccount] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [showSnackbar, setShowSnackbar] = React.useState(false);
   const router = useRouter();
+  const { showLoading, hideLoading } = useLoading();
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
   };
   const handeApi = () => {
+    showLoading()
     axiosInstance
       .post(auth, {
         username: account,
@@ -35,13 +38,15 @@ export default function SiginPage() {
       })
       .then((response) => {
         if (response && response.data) {
+          hideLoading();
           setToken(response.data.data.token);
           setLocalData(response.data.data);
-          router.replace("/");
+          router.replace("/bang-dieu-khien");
         } else {
           setShowSnackbar(true);
         }
-      });
+      }).finally(()=>{ hideLoading();})
+     
   };
   const cooperation_unit = [
     "/f.png",

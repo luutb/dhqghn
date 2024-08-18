@@ -1,5 +1,6 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
+import { LoadingProvider } from "@/context/loading-context";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -13,7 +14,7 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className="w-full h-full">
         <div className="flex min-h-screen min-w-screen flex-col min-w-full bg-slate-100	!p-0">
-          {children}
+          <LoadingProvider>{children}</LoadingProvider>
         </div>
       </body>
     </html>
