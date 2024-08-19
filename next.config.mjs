@@ -73,11 +73,15 @@ const nextConfig = {
              // Đường dẫn nội bộ của ứng dụng
       },
       {
-        source: '/sinh-vien',            // Đường dẫn yêu cầu từ phía người dùng
+        source: '/ho-so-sinh-vien',            // Đường dẫn yêu cầu từ phía người dùng
         destination: '/user', 
              // Đường dẫn nội bộ của ứng dụng
       },
-
+      {
+        source: '/lich-su-hoc',            // Đường dẫn yêu cầu từ phía người dùng
+        destination: '/user/course-user', 
+             // Đường dẫn nội bộ của ứng dụng
+      },
     ];
   },
     // exportPathMap() {
