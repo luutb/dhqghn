@@ -64,7 +64,7 @@ const nextConfig = {
       },
       {
         source: '/quan-ly-thi/:id',            // Đường dẫn yêu cầu từ phía người dùng
-        destination: '/admin/dashboard/courses/[id]?id=:id', 
+        destination: '/admin/dashboard/courses/[id]', 
              // Đường dẫn nội bộ của ứng dụng
       },
       {

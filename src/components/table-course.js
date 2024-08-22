@@ -1,30 +1,78 @@
-
-"use client"
-import React, { useState } from 'react';
+"use client";
+import React, { useEffect, useState } from "react";
 import {
-  Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
-  IconButton, Switch, Dialog, DialogActions, DialogContent, DialogTitle,
-  Button, Typography, Paper, Container, Box, Toolbar
-} from '@mui/material';
-import { Visibility as VisibilityIcon, Delete as DeleteIcon, GetApp as GetAppIcon, Add as AddIcon, Upload as UploadIcon } from '@mui/icons-material';
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  IconButton,
+  Switch,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Button,
+  Typography,
+  Paper,
+  Container,
+  Box,
+  Toolbar,
+} from "@mui/material";
+import {
+  Visibility as VisibilityIcon,
+  Delete as DeleteIcon,
+  GetApp as GetAppIcon,
+  Add as AddIcon,
+  Upload as UploadIcon,
+} from "@mui/icons-material";
+import axiosInstance from "@/axios/api-config";
+import { courses, updateStatusCourse } from "@/axios/endpoints";
+import { toast } from 'react-toastify';
+import { useRouter } from "next/navigation";
 // import * as XLSX from 'xlsx';
 // import { saveAs } from 'file-saver';
 
 // Sample data
 const exams = [
-  { id: 1, codeCourse: 'CS101', nameCode: 'Giới thiệu lập trình', date: '2024-08-30', semester: 'Kỳ 1 <2023-2024>', nameSchool: 'Trường Đại học ABC', status: true, count: 30 },
+  {
+    id: 1,
+    codeCourse: "CS101",
+    nameCode: "Giới thiệu lập trình",
+    date: "2024-08-30",
+    semester: "Kỳ 1 <2023-2024>",
+    nameSchool: "Trường Đại học ABC",
+    status: true,
+    count: 30,
+  },
   // Add more items here
 ];
 
 function TableCourse() {
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [selectedExam, setSelectedExam] = useState(null);
-
+  const [coursesState, setCourses] = useState([]);
+  const [refresh, setRefresh] = useState(true);
+  const router = useRouter();
   const handleDeleteClick = (exam) => {
     setSelectedExam(exam);
     setOpenDeleteDialog(true);
   };
-
+  useEffect(() => {
+   if(refresh){
+    axiosInstance
+    .get(courses)
+    .then((response) => {
+      if (response && response.data && response.data.data) {
+        setCourses([...response.data.data]);
+      }
+    })
+    .finally(() => {
+      setRefresh(false);
+    });
+   }
+  }, [refresh]);
   const handleDownloadClick = () => {
     // const ws = XLSX.utils.json_to_sheet(exams);
     // const wb = XLSX.utils.book_new();
@@ -32,7 +80,18 @@ function TableCourse() {
     // const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
     // saveAs(new Blob([wbout], { type: 'application/octet-stream' }), 'exams.xlsx');
   };
-
+  const navigationCourse = (id) =>{
+    console.log("chay vao day")
+    router.push("/quan-ly-thi/"+ id)
+  }
+  const handleSwitchCase = (id) => {
+    axiosInstance.put(updateStatusCourse + "?id=" + id).then((response) => {
+      if (response && response.data) {
+        toast.success("Cập nhật trạng thái thành công")
+        setRefresh(true);
+      }
+    });
+  };
   const handleConfirmDelete = () => {
     // Implement delete functionality here
     setOpenDeleteDialog(false);
@@ -43,18 +102,30 @@ function TableCourse() {
   };
 
   return (
-    <div className='w-full'>
-      <Box >
+    <div className="w-full">
+      <Box>
         <Paper elevation={3} className="p-4 bg-white">
           <Toolbar>
-            <Typography variant="h4" component="h1" sx={{ flexGrow: 1, color: '#1976d2' }}>
+            <Typography
+              variant="h4"
+              component="h1"
+              sx={{ flexGrow: 1, color: "#1976d2" }}
+            >
               Quản lý phòng thi
             </Typography>
             <Box>
-              <IconButton color="primary" onClick={() => console.log('Add new exam')} sx={{ mr: 1 }}>
+              <IconButton
+                color="primary"
+                onClick={() => console.log("Add new exam")}
+                sx={{ mr: 1 }}
+              >
                 <AddIcon />
               </IconButton>
-              <IconButton color="primary" onClick={() => console.log('Upload file')} sx={{ mr: 1 }}>
+              <IconButton
+                color="primary"
+                onClick={() => console.log("Upload file")}
+                sx={{ mr: 1 }}
+              >
                 <UploadIcon />
               </IconButton>
             </Box>
@@ -76,9 +147,9 @@ function TableCourse() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {exams.map((exam) => (
+                {coursesState.map((exam, index) => (
                   <TableRow key={exam.id}>
-                    <TableCell>{exam.id}</TableCell>
+                    <TableCell>{index + 1}</TableCell>
                     <TableCell>{exam.codeCourse}</TableCell>
                     <TableCell>{exam.codeCourse}</TableCell>
                     <TableCell>{exam.nameCode}</TableCell>
@@ -86,14 +157,26 @@ function TableCourse() {
                     <TableCell>{exam.semester}</TableCell>
                     <TableCell>{exam.nameSchool}</TableCell>
                     <TableCell>
-                      <Switch checked={exam.status} color="secondary" />
+                      <Switch
+                        checked={exam.status}
+                        color="secondary"
+                        onChange={() => {
+                          handleSwitchCase(exam.id);
+                        }}
+                      />
                     </TableCell>
-                    <TableCell>{exam.count}</TableCell>
+                    <TableCell>{exam.students.length}</TableCell>
                     <TableCell>
-                      <IconButton onClick={() => console.log('View details', exam)} color="info">
+                      <IconButton
+                        onClick={() => navigationCourse(exam.id)}
+                        color="info"
+                      >
                         <VisibilityIcon />
                       </IconButton>
-                      <IconButton onClick={() => handleDeleteClick(exam)} color="error">
+                      <IconButton
+                        onClick={() => handleDeleteClick(exam)}
+                        color="error"
+                      >
                         <DeleteIcon />
                       </IconButton>
                       <IconButton onClick={handleDownloadClick} color="success">
@@ -127,4 +210,3 @@ function TableCourse() {
 }
 
 export default TableCourse;
-

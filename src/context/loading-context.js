@@ -2,6 +2,7 @@
 
 import React, { createContext, useState, useContext } from 'react';
 
+
 // Tạo Context
 const LoadingContext = createContext(null);
 
@@ -15,6 +16,7 @@ export const LoadingProvider = ({ children }) => {
   return (
     <LoadingContext.Provider value={{ loading, showLoading, hideLoading }}>
       {children}
+ 
     </LoadingContext.Provider>
   );
 };

@@ -30,7 +30,7 @@ const FilterComponent = ({ school, setSchool, course, setCourse, term, setTerm, 
             >
               <MenuItem value="">Tất cả</MenuItem>
               {schools.map((m) =>{
-                 return <MenuItem value={m}>{m.name}</MenuItem>
+                 return <MenuItem value={m} key={m.id}>{m.name}</MenuItem>
               })}
             
             </Select>
