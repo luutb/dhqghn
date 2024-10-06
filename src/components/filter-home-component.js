@@ -29,8 +29,8 @@ const FilterComponent = ({ school, setSchool, course, setCourse, term, setTerm, 
               onChange={(e) => setSchool(e.target.value)}
             >
               <MenuItem value="">Tất cả</MenuItem>
-              {schools.map((m) =>{
-                 return <MenuItem value={m}>{m.name}</MenuItem>
+              {schools.map((m,index) =>{
+                 return <MenuItem key={index} value={m}>{m.name}</MenuItem>
               })}
             
             </Select>

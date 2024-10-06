@@ -67,7 +67,7 @@ const nextConfig = {
         destination: '/admin/dashboard/courses/[id]?id=:id', 
              // Đường dẫn nội bộ của ứng dụng
       },
-      {
+      {  
         source: '/quan-ly-lich-lam-viec',            // Đường dẫn yêu cầu từ phía người dùng
         destination: '/admin/dashboard/calendar-daily', 
              // Đường dẫn nội bộ của ứng dụng
