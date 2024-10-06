@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import Avatar from 'react-avatar';
+// import Avatar from 'react-avatar';
 import { IconButton, Tooltip } from '@mui/material';
 import { Edit, Delete, Lock } from '@mui/icons-material';
 import EditInstructorDialog from './dialog/edit-teacher';
@@ -90,7 +90,7 @@ const InstructorList = () => {
               <td className="px-6 py-4 border-b text-left">{instructor.id}</td>
               <td className="px-6 py-4 border-b text-left">{instructor.fullname}</td>
               <td className="px-6 py-4 border-b text-left">
-                <Avatar src={instructor.avatar} name={instructor.name} size="40" round={true} />
+                {/* <Avatar src={instructor.avatar} name={instructor.name} size="40" round={true} /> */}
               </td>
               <td className="px-6 py-4 border-b text-left">{instructor.department}</td>
               <td className="px-6 py-4 border-b text-left">

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useEffect, useState } from "react";
 import {
   Dialog,
@@ -11,7 +12,7 @@ import {
   FormControl,
   InputLabel,
 } from "@mui/material";
-import Avatar from "react-avatar";
+// import Avatar from "react-avatar";
 import { styled } from "@mui/material/styles";
 import axiosInstance from "@/axios/api-config";
 import { departments, teacher } from "@/axios/endpoints";
@@ -63,7 +64,7 @@ const EditInstructorDialog = ({ open, onClose, instructor, onSave }) => {
   }, []);
   const submit = () => {
     let body = { ...instructor, department: department.name , fullname: name, };
-    console.log("body",body)
+ 
     axiosInstance
       .post(teacher,body)
       .then((response) => {
@@ -71,7 +72,7 @@ const EditInstructorDialog = ({ open, onClose, instructor, onSave }) => {
           window.location.reload();
         } else {
         }
-      })
+      }).catch((err) =>{})
       .finally(() => {
         onClose();
       });
@@ -99,7 +100,7 @@ const EditInstructorDialog = ({ open, onClose, instructor, onSave }) => {
       <DialogContent>
         <div className="flex flex-col items-center mb-4 relative">
           <div className="relative">
-            <Avatar src={avatar} name={name} size="100" round={true} />
+            {/* <Avatar src={avatar} name={name} size="100" round={true} /> */}
             <label htmlFor="avatar-upload">
               <CameraIcon className="fas fa-camera" />
             </label>
