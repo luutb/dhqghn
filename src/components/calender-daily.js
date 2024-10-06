@@ -52,8 +52,8 @@ const Calendar = () => {
   };
 
   return (
-    <Container className="py-4">
-      <Paper elevation={3} className="p-4 mb-4 bg-white shadow-lg">
+    <div className="py-4 w-full">
+      <Paper elevation={3} className="p-4 mb-4 bg-white shadow-lg w-full">
         <Grid container spacing={2} alignItems="center">
           <Grid item xs={12} className="flex items-center justify-between">
             <Button
@@ -153,7 +153,7 @@ const Calendar = () => {
           </Paper>
         </Grid>
       </Grid>
-    </Container>
+    </div>
   );
 };
 

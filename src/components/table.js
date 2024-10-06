@@ -21,6 +21,7 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import DownloadIcon from "@mui/icons-material/Download";
 import axiosInstance from "@/axios/api-config";
 import { findStudent, liststudent, universitys } from "@/axios/endpoints";
+import { useLoading } from "@/context/loading-context";
 
 const initialStudents = [
   {
@@ -52,16 +53,20 @@ const initialStudents = [
 const cohorts = ["20", "19", "18"];
 
 const StudentList = () => {
-  const [students, setStudents] = useState(initialStudents);
+  const [students, setStudents] = useState([]);
   const [schools, setSchools] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedSchool, setSelectedSchool] = useState(null);
   const [selectedCohort, setSelectedCohort] = useState(null);
+  const {showLoading,hideLoading} = useLoading() 
   useEffect(() => {
+    showLoading()
     axiosInstance.get(liststudent).then((response) => {
       if (response && response.data && response.data.data) {
         setStudents(response.data.data);
       }
+    }).finally(()=>{
+      hideLoading();
     });
   }, []);
   useEffect(() => {
@@ -76,7 +81,6 @@ const StudentList = () => {
       nameStudent: searchTerm,
       university: selectedSchool.name 
     }
-    console.log("body",body)
     axiosInstance.post(findStudent,body).then((response) =>{
       if (response && response.data && response.data.data) {
         setStudents([...response.data.data]);
@@ -187,16 +191,16 @@ const StudentList = () => {
           </TableHead>
           <TableBody>
             {students.map((student) => (
-              <TableRow key={student.id} className="hover:bg-gray-100">
-                <TableCell>{student.id}</TableCell>
-                <TableCell>{student.fullName}</TableCell>
-                <TableCell>{student.gender}</TableCell>
-                <TableCell>{student.address}</TableCell>
-                <TableCell>{student.courseName}</TableCell>
-                <TableCell>{student.className}</TableCell>
-                <TableCell>{student.specialized}</TableCell>
-                <TableCell>{student.cohort}</TableCell>
-                <TableCell>
+              <TableRow key={student.id} className="hover:bg-gray-100 h-[30px]">
+                <TableCell className="py-0">{student.id}</TableCell>
+                <TableCell className="py-0">{student.fullName}</TableCell>
+                <TableCell className="py-0">{student.gender}</TableCell>
+                <TableCell className="py-0">{student.address}</TableCell>
+                <TableCell className="py-0">{student.courseName}</TableCell>
+                <TableCell className="py-0">{student.className}</TableCell>
+                <TableCell className="py-0">{student.specialized}</TableCell>
+                <TableCell className="py-0">{student.cohort}</TableCell>
+                <TableCell className="py-0">
                   <div className="flex space-x-2 justify-center">
                     <IconButton color="primary">
                       <VisibilityIcon />

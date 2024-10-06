@@ -1,20 +1,31 @@
 
 "use client"
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Container, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TextField, Button } from '@mui/material';
-
+import axiosInstance from '@/axios/api-config';
+import { useParams, useSearchParams } from 'next/navigation';
+import { courses } from '@/axios/endpoints';
+import { useRouter } from 'next/navigation';
 const initialData = [
-  { id: 'SV001', fullname: 'Nguyễn Văn A', dob: '2000-01-15', finalScore: 8.5, notes: '' },
-  { id: 'SV002', fullname: 'Trần Thị B', dob: '1999-05-22', finalScore: 7.0, notes: '' },
-  { id: 'SV003', fullname: 'Lê Văn C', dob: '2001-09-30', finalScore: 9.0, notes: '' },
-  { id: 'SV004', fullname: 'Phạm Thị D', dob: '2000-12-01', finalScore: 6.5, notes: '' },
-  { id: 'SV005', fullname: 'Bùi Văn E', dob: '1998-07-10', finalScore: 8.0, notes: '' },
+  { id: 'SV001', fullname: 'Nguyễn Văn A', dob: '2000-01-15', point: 8.5, notes: '' },
+  { id: 'SV002', fullname: 'Trần Thị B', dob: '1999-05-22', point: 7.0, notes: '' },
+  { id: 'SV003', fullname: 'Lê Văn C', dob: '2001-09-30', point: 9.0, notes: '' },
+  { id: 'SV004', fullname: 'Phạm Thị D', dob: '2000-12-01', point: 6.5, notes: '' },
+  { id: 'SV005', fullname: 'Bùi Văn E', dob: '1998-07-10', point: 8.0, notes: '' },
 ];
 
 export default function Home() {
-  const [data, setData] = useState(initialData);
+  const [data, setData] = useState(null);
+  const params = useParams();
+  const id = decodeURIComponent(params.id.toString())
 
+  useEffect(()=>{
+    axiosInstance.get(courses +"?id=" + id).then((response) =>{
+      setData(response.data.data)
+    })
+  },[])
   // Tạo các refs để quản lý tiêu điểm
+  
   const textFieldRefs = useRef([]);
 
   const handleScoreChange = (id, newScore) => {
@@ -41,46 +52,50 @@ export default function Home() {
   };
 
   return (
-    <Container maxWidth="lg" className="my-8">
+    <div  className="my-1 w-full px-4">
+      <div className='bg-white p-4 rounded'>
       <Typography variant="h4" component="h1" gutterBottom>
         Danh sách thi
       </Typography>
+      <div className='flex flex-row justify-between'>
       <Typography variant="h6" component="h2">
-        Mã môn: [Nhập mã môn]
+        Mã môn: {data?.codeCourse}
       </Typography>
       <Typography variant="h6" component="h2">
-        Tên môn: [Nhập tên môn]
+        Tên môn:  {data?.nameCourse}
       </Typography>
       <Typography variant="h6" component="h2">
-        Tên trường: [Nhập tên trường]
+        Tên trường:  {data?.date}
       </Typography>
       <Typography variant="h6" component="h2">
-        Thời gian thi: [Nhập thời gian thi]
+        Thời gian thi:  {data?.date}
       </Typography>
+      </div>
+      </div>
       <TableContainer component={Paper} className="mt-4">
         <Table>
           <TableHead>
             <TableRow>
               <TableCell>STT</TableCell>
-              <TableCell>Mã sinh viên (id)</TableCell>
-              <TableCell>Họ và tên (fullname)</TableCell>
-              <TableCell>Năm sinh (dob)</TableCell>
+              <TableCell>Mã sinh viên</TableCell>
+              <TableCell>Họ và tên</TableCell>
+              <TableCell>Năm sinh</TableCell>
               <TableCell>Điểm cuối kỳ</TableCell>
               <TableCell>Ghi chú</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {data.map((row, index) => (
-              <TableRow key={row.id}>
+            {data?.students.map((row, index) => (
+              <TableRow key={row.codeStudent}>
                 <TableCell>{index + 1}</TableCell>
-                <TableCell>{row.id}</TableCell>
-                <TableCell>{row.fullname}</TableCell>
-                <TableCell>{row.dob}</TableCell>
+                <TableCell>{row.codeStudent}</TableCell>
+                <TableCell>{row.fullName}</TableCell>
+                <TableCell>{row.date}</TableCell>
                 <TableCell>
                   <TextField
                     type="number"
                     inputProps={{ step: "0.1" }}
-                    value={row.finalScore}
+                    value={row.point}
                     onChange={(e) => handleScoreChange(row.id, e.target.value)}
                     onKeyDown={(e) => handleKeyDown(e, index)}
                     inputRef={el => textFieldRefs.current[index] = el} // Lưu ref vào mảng
@@ -100,6 +115,6 @@ export default function Home() {
       >
         Lưu
       </Button>
-    </Container>
+    </div>
   );
 }

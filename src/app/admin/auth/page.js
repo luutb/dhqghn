@@ -19,6 +19,8 @@ import { useRouter } from "next/navigation";
 import { Snackbar } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { useLoading } from "@/context/loading-context";
+import { toast } from "react-toastify";
+
 export default function SiginPage() {
   const [showPassword, setShowPassword] = React.useState(false);
   const [account, setAccount] = React.useState("");
@@ -38,11 +40,13 @@ export default function SiginPage() {
       })
       .then((response) => {
         if (response && response.data) {
+          toast.success("Đăng nhập thành công")
           hideLoading();
           setToken(response.data.data.token);
           setLocalData(response.data.data);
           router.replace("/bang-dieu-khien");
         } else {
+          toast.error("Thông tin chưa hợp lệ")
           setShowSnackbar(true);
         }
       }).finally(()=>{ hideLoading();})
