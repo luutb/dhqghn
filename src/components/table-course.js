@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   Table,
   TableBody,
@@ -28,8 +28,8 @@ import {
   Upload as UploadIcon,
 } from "@mui/icons-material";
 import axiosInstance from "@/axios/api-config";
-import { courses, updateStatusCourse } from "@/axios/endpoints";
-import { toast } from 'react-toastify';
+import { courses, updateStatusCourse, uploadCourse } from "@/axios/endpoints";
+import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 // import * as XLSX from 'xlsx';
 // import { saveAs } from 'file-saver';
@@ -54,24 +54,29 @@ function TableCourse() {
   const [selectedExam, setSelectedExam] = useState(null);
   const [coursesState, setCourses] = useState([]);
   const [refresh, setRefresh] = useState(true);
+  const [file, setFile] = useState(null);
+  const fileInputRef = useRef(null);
+  const handleFileChange = (e) => {
+    uploadFile(e.target.files[0]);
+  };
   const router = useRouter();
   const handleDeleteClick = (exam) => {
     setSelectedExam(exam);
     setOpenDeleteDialog(true);
   };
   useEffect(() => {
-   if(refresh){
-    axiosInstance
-    .get(courses)
-    .then((response) => {
-      if (response && response.data && response.data.data) {
-        setCourses([...response.data.data]);
-      }
-    })
-    .finally(() => {
-      setRefresh(false);
-    });
-   }
+    if (refresh) {
+      axiosInstance
+        .get(courses)
+        .then((response) => {
+          if (response && response.data && response.data.data) {
+            setCourses([...response.data.data]);
+          }
+        })
+        .finally(() => {
+          setRefresh(false);
+        });
+    }
   }, [refresh]);
   const handleDownloadClick = () => {
     // const ws = XLSX.utils.json_to_sheet(exams);
@@ -80,14 +85,14 @@ function TableCourse() {
     // const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
     // saveAs(new Blob([wbout], { type: 'application/octet-stream' }), 'exams.xlsx');
   };
-  const navigationCourse = (id) =>{
-    console.log("chay vao day")
-    router.push("/quan-ly-thi/"+ id)
-  }
+  const navigationCourse = (id) => {
+    router.push("/quan-ly-thi/" + id);
+  };
+
   const handleSwitchCase = (id) => {
     axiosInstance.put(updateStatusCourse + "?id=" + id).then((response) => {
       if (response && response.data) {
-        toast.success("Cập nhật trạng thái thành công")
+        toast.success("Cập nhật trạng thái thành công");
         setRefresh(true);
       }
     });
@@ -101,6 +106,29 @@ function TableCourse() {
     setOpenDeleteDialog(false);
   };
 
+  const uploadFile = async (_file) => {
+    console.log("_file",_file)
+    if (!_file) {
+      console.log("_file")
+      return;
+    }
+    const formData = new FormData();
+    formData.append("course", _file);
+    try {
+      axiosInstance.post(uploadCourse, formData,{
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }).then((response) => {
+        if (response && response.data) {
+          toast.success("Cập nhật trạng thái thành công");
+          setRefresh(true);
+        }
+      });
+    } catch (error) {
+      console.error("Error uploading file:", error);
+    }
+  };
   return (
     <div className="w-full">
       <Box>
@@ -121,9 +149,15 @@ function TableCourse() {
               >
                 <AddIcon />
               </IconButton>
+              <input
+                type="file"
+                ref={fileInputRef}
+                style={{ display: "none" }} // Ẩn input file
+                onChange={handleFileChange}
+              />
               <IconButton
                 color="primary"
-                onClick={() => console.log("Upload file")}
+                onClick={() => fileInputRef.current.click()}
                 sx={{ mr: 1 }}
               >
                 <UploadIcon />

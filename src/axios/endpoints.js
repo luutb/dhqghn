@@ -10,6 +10,7 @@ const teacher = "/api/v1/teacher";
 const departments = "/api/v1/deparments";
 const courses = "/api/v1/courses";
 const updateStatusCourse = "/api/v1/course";
+const uploadCourse = "/api/v1/importCourse"
 export {
   auth,
   dashboard,
@@ -23,4 +24,5 @@ export {
   teacher,
   courses,
   updateStatusCourse,
+  uploadCourse
 };
