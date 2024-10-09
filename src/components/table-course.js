@@ -28,7 +28,7 @@ import {
   Upload as UploadIcon,
 } from "@mui/icons-material";
 import axiosInstance from "@/axios/api-config";
-import { courses, updateStatusCourse, uploadCourse } from "@/axios/endpoints";
+import { courses, downloadCourse, updateStatusCourse, uploadCourse } from "@/axios/endpoints";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 // import * as XLSX from 'xlsx';
@@ -78,12 +78,17 @@ function TableCourse() {
         });
     }
   }, [refresh]);
-  const handleDownloadClick = () => {
+  const handleDownloadClick = (id) => {
     // const ws = XLSX.utils.json_to_sheet(exams);
     // const wb = XLSX.utils.book_new();
     // XLSX.utils.book_append_sheet(wb, ws, 'Exams');
     // const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
     // saveAs(new Blob([wbout], { type: 'application/octet-stream' }), 'exams.xlsx');
+    axiosInstance.get(downloadCourse + "?id=" + id).then((response) => {
+      if (response && response.data) {
+        window.open("http://localhost:3200/export.xlsx")
+      }
+    });
   };
   const navigationCourse = (id) => {
     router.push("/quan-ly-thi/" + id);
@@ -213,7 +218,7 @@ function TableCourse() {
                       >
                         <DeleteIcon />
                       </IconButton>
-                      <IconButton onClick={handleDownloadClick} color="success">
+                      <IconButton onClick={() =>{handleDownloadClick(exam.id)}} color="success">
                         <GetAppIcon />
                       </IconButton>
                     </TableCell>
