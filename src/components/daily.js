@@ -1,6 +1,8 @@
 // components/DailySchedule.js
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Box, Typography, Paper, TextField, Button, List, ListItem } from '@mui/material';
+import axiosInstance from '@/axios/api-config';
+import { scheduleDate } from '@/axios/endpoints';
 
 const initialEvents = [
     { time: '08:00', person: 'Nguyễn Văn A', location: 'Phòng 101', school: 'Trường A', task: 'Họp với khách hàng' },
@@ -21,7 +23,14 @@ function DailySchedule() {
   const [location, setLocation] = useState('');
   const [school, setSchool] = useState('');
   const [task, setTask] = useState('');
-    const date = new Date();
+  const date = new Date();
+  useEffect(() =>{
+    axiosInstance.get(scheduleDate).then(res =>{
+      if(res.data && res.data.error == 200){
+        console.log(res.data.data)
+      }
+    })
+  },[])
   const handleAddEvent = () => {
     if (time && person && location && school && task) {
       setEvents([...events, { time, person, location, school, task }]);

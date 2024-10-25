@@ -11,7 +11,10 @@ const departments = "/api/v1/deparments";
 const courses = "/api/v1/courses";
 const updateStatusCourse = "/api/v1/course";
 const uploadCourse = "/api/v1/importCourse"
-const downloadCourse = "/api/v1/exportExcelCtrl"
+const downloadCourse = "/api/v1/exportExcelCtrl";
+const scheduleDate = "api/v1/schedules-date"
+const roles = "/api/v1/roles"
+const role =  "/api/v1/role"
 export {
   auth,
   dashboard,
@@ -26,5 +29,8 @@ export {
   courses,
   updateStatusCourse,
   uploadCourse,
-  downloadCourse
+  downloadCourse,
+  scheduleDate,
+  roles,
+  role
 };

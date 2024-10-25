@@ -17,14 +17,14 @@ const initialInstructors = [
 ];
 
 const InstructorList = () => {
-  const [instructors, setInstructors] = useState(null);
+ 
   const [selectedInstructor, setSelectedInstructor] = useState(null);
   const [dialogType, setDialogType] = useState(null);
 
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [changePasswordDialogOpen, setChangePasswordDialogOpen] = useState(false);
-
+  const [instructors, setInstructors] = useState(null);
   useEffect(() =>{
     axiosInstance.get(teachers).then((response) =>{
         if(response && response.data && response.data.error === 200){

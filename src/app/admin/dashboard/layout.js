@@ -152,21 +152,6 @@ export default function LayoutNavigation({ children }) {
   const router = useRouter();
   return (
     <Box sx={{ display: "flex", width:"100%" }}>
-      {/* <CssBaseline /> */}
-      {/* <AppBar position="fixed" open={open} className="bg-white w-[60px] left-0" >
-        <IconButton
-          color=""
-          aria-label="open drawer"
-          onClick={handleDrawerOpen}
-          edge="start"
-          sx={{
-         
-            ...(open && { display: "none" }),
-          }}
-        >
-          <MenuIcon />
-        </IconButton>
-      </AppBar> */}
       <Drawer variant="permanent" open={open}>
         <DrawerHeader>
           {!open ? (
@@ -224,8 +209,7 @@ export default function LayoutNavigation({ children }) {
         </List>
       </Drawer>
       <Box sx={{ display: "flex", width:"100%" }}>
-    
-        <main className="flex min-h-screen flex-col min-w-screen  items-center justify-between min-w-full">
+        <main className="flex min-h-screen flex-col min-w-screen px-2 items-center justify-between min-w-full">
           {children}
         </main>
       </Box>

@@ -82,6 +82,16 @@ const nextConfig = {
         destination: '/user/course-user', 
              // Đường dẫn nội bộ của ứng dụng
       },
+      {
+        source: '/cai-dat',            // Đường dẫn yêu cầu từ phía người dùng
+        destination: '/admin/dashboard/settings', 
+             // Đường dẫn nội bộ của ứng dụng
+      },
+      {
+        source: '/cai-dat-quyen',            // Đường dẫn yêu cầu từ phía người dùng
+        destination: '/admin/dashboard/permissions', 
+             // Đường dẫn nội bộ của ứng dụng
+      },
     ];
   },
     // exportPathMap() {

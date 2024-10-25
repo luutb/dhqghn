@@ -104,9 +104,22 @@ function TableCourse() {
   };
   const handleConfirmDelete = () => {
     // Implement delete functionality here
+    deleteCourse(selectedExam.id)
     setOpenDeleteDialog(false);
   };
 
+  const deleteCourse = (id) =>{
+    axiosInstance.delete(`/api/v1/courses?id=${id}`).then((res)=>{
+      if(res.data && res.data.error == 200){
+        toast.success("Xoá thành công thành công");
+        setRefresh(true);
+
+      }
+      else{
+        toast.success("Đã có sự cố! Vui lòng thử lại");
+      }
+    })
+  }
   const handleCloseDeleteDialog = () => {
     setOpenDeleteDialog(false);
   };

@@ -79,7 +79,7 @@ const StudentList = () => {
   const handleFind = () =>{
     let body = {
       nameStudent: searchTerm,
-      university: selectedSchool.name 
+      university: selectedSchool.name ??""
     }
     axiosInstance.post(findStudent,body).then((response) =>{
       if (response && response.data && response.data.data) {
@@ -92,6 +92,7 @@ const StudentList = () => {
   };
 
   const handleSchoolChange = (event) => {
+    console.log("event.target.value",event.target.value)
     if(event.target.value){
       setSelectedSchool(event.target.value ?? "");
     }
@@ -192,7 +193,7 @@ const StudentList = () => {
           <TableBody>
             {students.map((student) => (
               <TableRow key={student.id} className="hover:bg-gray-100 h-[30px]">
-                <TableCell className="py-0">{student.id}</TableCell>
+                <TableCell className="py-0">{student._id}</TableCell>
                 <TableCell className="py-0">{student.fullName}</TableCell>
                 <TableCell className="py-0">{student.gender}</TableCell>
                 <TableCell className="py-0">{student.address}</TableCell>
