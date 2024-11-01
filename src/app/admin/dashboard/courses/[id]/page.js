@@ -12,36 +12,67 @@ import {
   Paper,
   TextField,
   Button,
+  makeStyles,
 } from "@mui/material";
 import axiosInstance from "@/axios/api-config";
 import { useParams, useSearchParams } from "next/navigation";
-import { courses } from "@/axios/endpoints";
+import { courses, updatePoint } from "@/axios/endpoints";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 export default function Home() {
   const [data, setData] = useState(null);
+  const [students, setStudents] = useState([]);
+  const [isRefresh,setIsRefresh] = useState(false)
   const params = useParams();
   const id = decodeURIComponent(params.id.toString());
-  console.log("id", id);
+  
   useEffect(() => {
     axiosInstance.get(courses + "?id=" + id).then((response) => {
       setData(response.data.data);
+      setStudents(response.data.data.students);
+      setIsRefresh(false)
     });
   }, []);
+  useEffect(() => {
+    if(isRefresh){
+      axiosInstance.get(courses + "?id=" + id).then((response) => {
+        setData(response.data.data);
+        setStudents(response.data.data.students);
+        setIsRefresh(false)
+      });
+    }
+
+  }, [isRefresh]);
   // Tạo các refs để quản lý tiêu điểm
 
   const textFieldRefs = useRef([]);
 
   const handleScoreChange = (id, newScore) => {
-    setData((prevData) =>
-      prevData.map((row) =>
-        row.id === id ? { ...row, finalScore: parseFloat(newScore) } : row
-      )
-    );
+    
+    let index = students.findIndex((m) => m.codeStudent.toString() === id.toString());
+    console.log("index",index)
+    if (newScore > 10) {
+      toast.error("Xin lỗi điểm phải nhỏ hơn 10");
+      textFieldRefs.current[index].value = students[index].point
+      return;
+    }
+  
+    if (index > -1) {
+      students[index].point = newScore;
+      // console.log("students",students)
+      // setStudents([...students])
+    }
+    console.log("students",students[0])
+    // setData((prevData) =>
+    //   prevData.map((row) =>
+    //     row.id === id ? { ...row, finalScore: parseFloat(newScore) } : row
+    //   )
+    // );
   };
-
+ 
   const fillColor = (point) => {
-    console.log("point",point)
+    console.log("point", point);
     if (point < 4) {
       return "text-red-600";
     }
@@ -58,8 +89,24 @@ export default function Home() {
   };
 
   const handleSubmit = () => {
+    data.students = [...students]
+    console.log("students",students)
     // Xử lý logic gửi dữ liệu khi người dùng nhấn "Lưu"
-    console.log("Dữ liệu đã được cập nhật:", data);
+    axiosInstance.put(updatePoint, {data:{
+      ...data,
+      students:students
+    }}).then((res) =>{
+      if(res && res.data && res.data.error === 200){
+        toast.success("Cập nhật điểm thành công!")
+        setIsRefresh(true)
+        // window.location.reload()
+      }
+      else{
+        toast.error("Vui lòng thử lại sau")
+      }
+    })
+   
+  
   };
 
   return (
@@ -108,7 +155,7 @@ export default function Home() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {data?.students.map((row, index) => (
+            {students.map((row, index) => (
               <TableRow key={row.codeStudent}>
                 <TableCell
                   className={`font-thin text-center ${fillColor(row.point)}`}
@@ -134,10 +181,13 @@ export default function Home() {
                   className={`font-thin text-center ${fillColor(row.point)}`}
                 >
                   <TextField
+                    size="small"
                     type="number"
                     inputProps={{ step: "0.1" }}
-                    value={row.point}
-                    onChange={(e) => handleScoreChange(row.id, e.target.value)}
+                    defaultValue={row.point}
+                    onChange={(e) =>
+                      handleScoreChange(row.codeStudent, e.target.value)
+                    }
                     onKeyDown={(e) => handleKeyDown(e, index)}
                     inputRef={(el) => (textFieldRefs.current[index] = el)} // Lưu ref vào mảng
                   />

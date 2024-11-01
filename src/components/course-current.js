@@ -37,7 +37,7 @@ const StudentCoursesListCurrent = () => {
           </TableHead>
           <TableBody>
             {courses.map((course, index) => (
-              <TableRow key={course.idCourse}>
+              <TableRow key={course.idCourse} className='h-[30px]'>
                 <TableCell>{index + 1}</TableCell>
                 <TableCell>{course.idCourse}</TableCell>
                 <TableCell>{course.nameCourse}</TableCell>

@@ -59,7 +59,7 @@ const EditPermissionDialog = ({ open, onClose, permission, onSave }) => {
       });
     }
     else{
-      console.log("permission222")
+
       axiosInstance.post(roles,body).then((response) => {
         if (response && response.data && response.data.error === 200) {
           onClose()
@@ -70,7 +70,7 @@ const EditPermissionDialog = ({ open, onClose, permission, onSave }) => {
     }
     
   };
-  console.log("members", members);
+ 
   const handleMemberChange = (_member) => {
     const _id = members.findIndex((member) => member.id === _member.id);
     console.log();

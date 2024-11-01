@@ -50,12 +50,13 @@ const initialStudents = [
 ];
 
 // const schools = ['Trường A', 'Trường B', 'Trường C'];
-const cohorts = ["20", "19", "18"];
+const cohorts = ["23","22","21","20", "19", "18"];
 
 const StudentList = () => {
   const [students, setStudents] = useState([]);
   const [schools, setSchools] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectScholastic,setSelectScholastic] = useState(0)
   const [selectedSchool, setSelectedSchool] = useState(null);
   const [selectedCohort, setSelectedCohort] = useState(null);
   const {showLoading,hideLoading} = useLoading() 
@@ -79,11 +80,16 @@ const StudentList = () => {
   const handleFind = () =>{
     let body = {
       nameStudent: searchTerm,
-      university: selectedSchool.name ??""
+      university: selectedSchool?.name ??"",
+      scholastic: selectedCohort ?? 0
     }
+    console.log('body',body)
     axiosInstance.post(findStudent,body).then((response) =>{
       if (response && response.data && response.data.data) {
         setStudents([...response.data.data]);
+      }
+      else{
+        setStudents([])
       }
     })
   }
@@ -193,14 +199,14 @@ const StudentList = () => {
           <TableBody>
             {students.map((student) => (
               <TableRow key={student.id} className="hover:bg-gray-100 h-[30px]">
-                <TableCell className="py-0">{student._id}</TableCell>
+                <TableCell className="py-0">{student.id}</TableCell>
                 <TableCell className="py-0">{student.fullName}</TableCell>
                 <TableCell className="py-0">{student.gender}</TableCell>
                 <TableCell className="py-0">{student.address}</TableCell>
-                <TableCell className="py-0">{student.courseName}</TableCell>
-                <TableCell className="py-0">{student.className}</TableCell>
                 <TableCell className="py-0">{student.specialized}</TableCell>
-                <TableCell className="py-0">{student.cohort}</TableCell>
+                <TableCell className="py-0">{student.className}</TableCell>
+                <TableCell className="py-0">{student.nameUniversity}</TableCell>
+                <TableCell className="py-0">{student.scholastic}</TableCell>
                 <TableCell className="py-0">
                   <div className="flex space-x-2 justify-center">
                     <IconButton color="primary">

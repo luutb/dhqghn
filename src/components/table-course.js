@@ -202,9 +202,9 @@ function TableCourse() {
                 {coursesState.map((exam, index) => (
                   <TableRow key={exam.id}>
                     <TableCell>{index + 1}</TableCell>
+                    <TableCell>{exam.nameRoom}</TableCell>
                     <TableCell>{exam.codeCourse}</TableCell>
-                    <TableCell>{exam.codeCourse}</TableCell>
-                    <TableCell>{exam.nameCode}</TableCell>
+                    <TableCell>{exam.nameCourse}</TableCell>
                     <TableCell>{exam.date}</TableCell>
                     <TableCell>{exam.semester}</TableCell>
                     <TableCell>{exam.nameSchool}</TableCell>

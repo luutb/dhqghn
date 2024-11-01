@@ -15,6 +15,7 @@ const downloadCourse = "/api/v1/exportExcelCtrl";
 const scheduleDate = "api/v1/schedules-date"
 const roles = "/api/v1/roles"
 const role =  "/api/v1/role"
+const updatePoint = "/api/v1/updatePoint"
 export {
   auth,
   dashboard,
@@ -32,5 +33,6 @@ export {
   downloadCourse,
   scheduleDate,
   roles,
-  role
+  role,
+  updatePoint
 };
