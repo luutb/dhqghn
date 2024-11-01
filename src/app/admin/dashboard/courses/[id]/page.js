@@ -40,8 +40,6 @@ export default function Home() {
       axiosInstance.get(courses + "?id=" + id).then((response) => {
         setData(response.data.data);
         setStudents(response.data.data.students);
-       
-      
         setIsRefresh(false)
       });
     }
@@ -52,8 +50,8 @@ export default function Home() {
   const textFieldRefs = useRef([]);
 
   const handleScoreChange = (id, newScore) => {
-  
-    let index = students.findIndex((m) => m.codeStudent.toString() === id.toString());
+    const _students = students;
+    let index = _students.findIndex((m) => m.codeStudent.toString() === id.toString());
   
     if (newScore > 10) {
       toast.error("Xin lỗi điểm phải nhỏ hơn 10");
@@ -62,8 +60,8 @@ export default function Home() {
     }
   
     if (index > -1) {
-      students[index].point = newScore;
-      setDataStudents(students)
+      _students[index].point = newScore;
+      setDataStudents(_students)
       // console.log("students",students)
       // setStudents([...students])
     }
@@ -109,8 +107,6 @@ export default function Home() {
         toast.error("Vui lòng thử lại sau")
       }
     })
-   
-  
   };
 
   return (
