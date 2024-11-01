@@ -26,11 +26,12 @@ export default function Home() {
   const [isRefresh,setIsRefresh] = useState(false)
   const params = useParams();
   const id = decodeURIComponent(params.id.toString());
-  
+  const [dataStudents,setDataStudents] = useState([]);
   useEffect(() => {
     axiosInstance.get(courses + "?id=" + id).then((response) => {
       setData(response.data.data);
       setStudents(response.data.data.students);
+      
       setIsRefresh(false)
     });
   }, []);
@@ -39,6 +40,8 @@ export default function Home() {
       axiosInstance.get(courses + "?id=" + id).then((response) => {
         setData(response.data.data);
         setStudents(response.data.data.students);
+       
+      
         setIsRefresh(false)
       });
     }
@@ -49,7 +52,7 @@ export default function Home() {
   const textFieldRefs = useRef([]);
 
   const handleScoreChange = (id, newScore) => {
-    
+  
     let index = students.findIndex((m) => m.codeStudent.toString() === id.toString());
   
     if (newScore > 10) {
@@ -60,6 +63,7 @@ export default function Home() {
   
     if (index > -1) {
       students[index].point = newScore;
+      setDataStudents(students)
       // console.log("students",students)
       // setStudents([...students])
     }
@@ -94,7 +98,7 @@ export default function Home() {
     // Xử lý logic gửi dữ liệu khi người dùng nhấn "Lưu"
     axiosInstance.put(updatePoint, {data:{
       ...data,
-      students:students
+      students:dataStudents.length > 0 ? dataStudents : students
     }}).then((res) =>{
       if(res && res.data && res.data.error === 200){
         toast.success("Cập nhật điểm thành công!")
