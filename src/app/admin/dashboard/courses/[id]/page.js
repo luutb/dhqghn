@@ -51,7 +51,7 @@ export default function Home() {
   const handleScoreChange = (id, newScore) => {
     
     let index = students.findIndex((m) => m.codeStudent.toString() === id.toString());
-    console.log("index",index)
+  
     if (newScore > 10) {
       toast.error("Xin lỗi điểm phải nhỏ hơn 10");
       textFieldRefs.current[index].value = students[index].point
@@ -63,7 +63,7 @@ export default function Home() {
       // console.log("students",students)
       // setStudents([...students])
     }
-    console.log("students",students[0])
+   
     // setData((prevData) =>
     //   prevData.map((row) =>
     //     row.id === id ? { ...row, finalScore: parseFloat(newScore) } : row
