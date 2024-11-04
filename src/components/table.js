@@ -85,7 +85,7 @@ const StudentList = () => {
       university: selectedSchool?.name ??"",
       scholastic: selectedCohort ?? 0
     }
-    console.log('body',body)
+  
     axiosInstance.post(findStudent,body).then((response) =>{
       if (response && response.data && response.data.data) {
         setStudents([...response.data.data]);
