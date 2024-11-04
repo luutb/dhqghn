@@ -20,8 +20,9 @@ import {
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import DownloadIcon from "@mui/icons-material/Download";
 import axiosInstance from "@/axios/api-config";
-import { findStudent, liststudent, universitys } from "@/axios/endpoints";
+import { exportCer, findStudent, liststudent, universitys } from "@/axios/endpoints";
 import { useLoading } from "@/context/loading-context";
+import { useRouter } from "next/navigation";
 
 const initialStudents = [
   {
@@ -60,6 +61,7 @@ const StudentList = () => {
   const [selectedSchool, setSelectedSchool] = useState(null);
   const [selectedCohort, setSelectedCohort] = useState(null);
   const {showLoading,hideLoading} = useLoading() 
+  const router = useRouter()
   useEffect(() => {
     showLoading()
     axiosInstance.get(liststudent).then((response) => {
@@ -97,6 +99,9 @@ const StudentList = () => {
     setSearchTerm(event.target.value);
   };
 
+  const navigationCourse = (id) => {
+    router.push("/quan-ly-sinh-vien/" + id);
+  };
   const handleSchoolChange = (event) => {
     console.log("event.target.value",event.target.value)
     if(event.target.value){
@@ -107,6 +112,18 @@ const StudentList = () => {
   }
   };
 
+  const handleDownloadClick = (id) => {
+    // const ws = XLSX.utils.json_to_sheet(exams);
+    // const wb = XLSX.utils.book_new();
+    // XLSX.utils.book_append_sheet(wb, ws, 'Exams');
+    // const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+    // saveAs(new Blob([wbout], { type: 'application/octet-stream' }), 'exams.xlsx');
+    axiosInstance.get(exportCer + "?id=" + id).then((response) => {
+      if (response && response.data) {
+        window.open("http://116.118.48.169:3200/certificate.xlsx")
+      }
+    });
+  };
   const handleCohortChange = (event) => {
     setSelectedCohort(event.target.value);
   };
@@ -209,10 +226,10 @@ const StudentList = () => {
                 <TableCell className="py-0">{student.scholastic}</TableCell>
                 <TableCell className="py-0">
                   <div className="flex space-x-2 justify-center">
-                    <IconButton color="primary">
+                    <IconButton color="primary" onClick={() =>navigationCourse(student.id)}>
                       <VisibilityIcon />
                     </IconButton>
-                    <IconButton color="secondary">
+                    <IconButton color="secondary" onClick={() =>{handleDownloadClick(student.id)}}>
                       <DownloadIcon />
                     </IconButton>
                   </div>

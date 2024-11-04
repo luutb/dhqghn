@@ -86,7 +86,7 @@ function TableCourse() {
     // saveAs(new Blob([wbout], { type: 'application/octet-stream' }), 'exams.xlsx');
     axiosInstance.get(downloadCourse + "?id=" + id).then((response) => {
       if (response && response.data) {
-        window.open("http://localhost:3200/export.xlsx")
+        window.open("http://116.118.48.169:3200/export.xlsx")
       }
     });
   };

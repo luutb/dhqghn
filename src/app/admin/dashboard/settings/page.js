@@ -62,8 +62,8 @@ const programs = [
 const GroupPermissionsList = () => {
   return (
     <div className="grid grid-cols-2 gap-4 w-full">
-      {programs.map((m) => (
-        <CardComponent name={m.name} discription={m.discription} link={m.link}/>
+      {programs.map((m,index) => (
+        <CardComponent name={m.name} discription={m.discription} link={m.link} key={index}/>
       ))}
     </div>
   );

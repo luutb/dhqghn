@@ -49,7 +49,7 @@ const nextConfig = {
       },
       {
         source: '/quan-ly-sinh-vien/:id',            // Đường dẫn yêu cầu từ phía người dùng
-        destination: '/admin/dashboard/alumunus/[id]?id=:id', 
+        destination: '/admin/dashboard/alumunus/:id', 
              // Đường dẫn nội bộ của ứng dụng
       },
       {

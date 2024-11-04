@@ -52,7 +52,7 @@ export default function Home() {
   const handleScoreChange = (id, newScore) => {
     const _students = students;
     let index = _students.findIndex((m) => m.codeStudent.toString() === id.toString());
-  
+    console.log("index",index)
     if (newScore > 10) {
       toast.error("Xin lỗi điểm phải nhỏ hơn 10");
       textFieldRefs.current[index].value = students[index].point
@@ -60,8 +60,8 @@ export default function Home() {
     }
   
     if (index > -1) {
-      _students[index].point = newScore;
-      setDataStudents(_students)
+      // _students[index].point = newScore;
+      // setDataStudents(_students)
       // console.log("students",students)
       // setStudents([...students])
     }
@@ -155,7 +155,7 @@ export default function Home() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {students.map((row, index) => (
+            {students.length > 0 ? students?.map((row, index) => (
               <TableRow key={row.codeStudent}>
                 <TableCell
                   className={`font-thin text-center ${fillColor(row.point)}`}
@@ -194,7 +194,7 @@ export default function Home() {
                 </TableCell>
                 <TableCell>{row.notes}</TableCell>
               </TableRow>
-            ))}
+            )):null}
           </TableBody>
         </Table>
       </TableContainer>

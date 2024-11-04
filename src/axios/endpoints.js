@@ -16,6 +16,8 @@ const scheduleDate = "api/v1/schedules-date"
 const roles = "/api/v1/roles"
 const role =  "/api/v1/role"
 const updatePoint = "/api/v1/updatePoint"
+const preview = "/api/v1/preview"
+const exportCer = "/api/v1/exportCer"
 export {
   auth,
   dashboard,
@@ -34,5 +36,7 @@ export {
   scheduleDate,
   roles,
   role,
-  updatePoint
+  updatePoint,
+  preview,
+  exportCer
 };
