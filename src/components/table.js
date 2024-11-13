@@ -57,7 +57,6 @@ const StudentList = () => {
   const [students, setStudents] = useState([]);
   const [schools, setSchools] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectScholastic,setSelectScholastic] = useState(0)
   const [selectedSchool, setSelectedSchool] = useState(null);
   const [selectedCohort, setSelectedCohort] = useState(null);
   const {showLoading,hideLoading} = useLoading() 
@@ -194,7 +193,7 @@ const StudentList = () => {
           </Select>
         </FormControl>
         <button onClick={() =>{handleFind()}}>
-          <div className="w-[100px] bg-black rounded">Tìm kiếm</div>
+          <div className="w-[100px]  rounded">Tìm kiếm</div>
         </button>
       </div>
 

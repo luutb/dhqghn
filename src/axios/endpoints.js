@@ -10,15 +10,19 @@ const teacher = "/api/v1/teacher";
 const departments = "/api/v1/deparments";
 const courses = "/api/v1/courses";
 const updateStatusCourse = "/api/v1/course";
-const uploadCourse = "/api/v1/importCourse"
+const uploadCourse = "/api/v1/importCourse";
 const downloadCourse = "/api/v1/exportExcelCtrl";
-const scheduleDate = "api/v1/schedules-date"
-const roles = "/api/v1/roles"
-const role =  "/api/v1/role"
-const updatePoint = "/api/v1/updatePoint"
-const preview = "/api/v1/preview"
-const exportCer = "/api/v1/exportCer"
+const scheduleDate = "api/v1/schedules-date";
+const roles = "/api/v1/roles";
+const role = "/api/v1/role";
+const updatePoint = "/api/v1/updatePoint";
+const preview = "/api/v1/preview";
+const exportCer = "/api/v1/exportCer";
+const subjects = "/api/v1/subjects";
+const updatePoints = "/api/v1/updatePoints";
 export {
+  updatePoints,
+  subjects,
   auth,
   dashboard,
   importStudent,
@@ -38,5 +42,5 @@ export {
   role,
   updatePoint,
   preview,
-  exportCer
+  exportCer,
 };

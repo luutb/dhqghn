@@ -23,27 +23,26 @@ import { toast } from "react-toastify";
 export default function Home() {
   const [data, setData] = useState(null);
   const [students, setStudents] = useState([]);
-  const [isRefresh,setIsRefresh] = useState(false)
+  const [isRefresh, setIsRefresh] = useState(false);
   const params = useParams();
   const id = decodeURIComponent(params.id.toString());
-  const [dataStudents,setDataStudents] = useState([]);
+  const [dataStudents, setDataStudents] = useState([]);
   useEffect(() => {
     axiosInstance.get(courses + "?id=" + id).then((response) => {
       setData(response.data.data);
       setStudents(response.data.data.students);
-      
-      setIsRefresh(false)
+
+      setIsRefresh(false);
     });
   }, []);
   useEffect(() => {
-    if(isRefresh){
+    if (isRefresh) {
       axiosInstance.get(courses + "?id=" + id).then((response) => {
         setData(response.data.data);
         setStudents(response.data.data.students);
-        setIsRefresh(false)
+        setIsRefresh(false);
       });
     }
-
   }, [isRefresh]);
   // Tạo các refs để quản lý tiêu điểm
 
@@ -51,28 +50,31 @@ export default function Home() {
 
   const handleScoreChange = (id, newScore) => {
     const _students = students;
-    let index = _students.findIndex((m) => m.codeStudent.toString() === id.toString());
-    console.log("index",index)
-    if (newScore > 10) {
-      toast.error("Xin lỗi điểm phải nhỏ hơn 10");
-      textFieldRefs.current[index].value = students[index].point
-      return;
+    if (_students) {
+      let index = _students.findIndex(
+        (m) => m.codeStudent.toString() === id.toString()
+      );
+      console.log("index", index);
+      if (newScore > 10) {
+        toast.error("Xin lỗi điểm phải nhỏ hơn 10");
+        textFieldRefs.current[index].value = students[index].point;
+        return;
+      }
+      if (index > -1) {
+        _students[index].point = newScore;
+        // setDataStudents(_students)
+        // console.log("students",students)
+        // setStudents([...students])
+      }
     }
-  
-    if (index > -1) {
-      // _students[index].point = newScore;
-      // setDataStudents(_students)
-      // console.log("students",students)
-      // setStudents([...students])
-    }
-   
+
     // setData((prevData) =>
     //   prevData.map((row) =>
     //     row.id === id ? { ...row, finalScore: parseFloat(newScore) } : row
     //   )
     // );
   };
- 
+
   const fillColor = (point) => {
     console.log("point", point);
     if (point < 4) {
@@ -91,22 +93,25 @@ export default function Home() {
   };
 
   const handleSubmit = () => {
-    data.students = [...students]
-    console.log("students",students)
+    data.students = [...students];
+    console.log("students", students);
     // Xử lý logic gửi dữ liệu khi người dùng nhấn "Lưu"
-    axiosInstance.put(updatePoint, {data:{
-      ...data,
-      students:dataStudents.length > 0 ? dataStudents : students
-    }}).then((res) =>{
-      if(res && res.data && res.data.error === 200){
-        toast.success("Cập nhật điểm thành công!")
-        setIsRefresh(true)
-        // window.location.reload()
-      }
-      else{
-        toast.error("Vui lòng thử lại sau")
-      }
-    })
+    axiosInstance
+      .put(updatePoint, {
+        data: {
+          ...data,
+          students: dataStudents.length > 0 ? dataStudents : students,
+        },
+      })
+      .then((res) => {
+        if (res && res.data && res.data.error === 200) {
+          toast.success("Cập nhật điểm thành công!");
+          setIsRefresh(true);
+          // window.location.reload()
+        } else {
+          toast.error("Vui lòng thử lại sau");
+        }
+      });
   };
 
   return (
@@ -155,46 +160,58 @@ export default function Home() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {students.length > 0 ? students?.map((row, index) => (
-              <TableRow key={row.codeStudent}>
-                <TableCell
-                  className={`font-thin text-center ${fillColor(row.point)}`}
-                >
-                  {index + 1}
-                </TableCell>
-                <TableCell
-                  className={`font-thin text-center ${fillColor(row.point)}`}
-                >
-                  {row.codeStudent}
-                </TableCell>
-                <TableCell
-                  className={`font-thin text-center ${fillColor(row.point)}`}
-                >
-                  {row.fullName}
-                </TableCell>
-                <TableCell
-                  className={`font-thin text-center ${fillColor(row.point)}`}
-                >
-                  {row.date}
-                </TableCell>
-                <TableCell
-                  className={`font-thin text-center ${fillColor(row.point)}`}
-                >
-                  <TextField
-                    size="small"
-                    type="number"
-                    inputProps={{ step: "0.1" }}
-                    defaultValue={row.point}
-                    onChange={(e) =>
-                      handleScoreChange(row.codeStudent, e.target.value)
-                    }
-                    onKeyDown={(e) => handleKeyDown(e, index)}
-                    inputRef={(el) => (textFieldRefs.current[index] = el)} // Lưu ref vào mảng
-                  />
-                </TableCell>
-                <TableCell>{row.notes}</TableCell>
-              </TableRow>
-            )):null}
+            {students.length > 0
+              ? students?.map((row, index) => (
+                  <TableRow key={row.codeStudent}>
+                    <TableCell
+                      className={`font-thin text-center ${fillColor(
+                        row.point
+                      )}`}
+                    >
+                      {index + 1}
+                    </TableCell>
+                    <TableCell
+                      className={`font-thin text-center ${fillColor(
+                        row.point
+                      )}`}
+                    >
+                      {row.codeStudent}
+                    </TableCell>
+                    <TableCell
+                      className={`font-thin text-center ${fillColor(
+                        row.point
+                      )}`}
+                    >
+                      {row.fullName}
+                    </TableCell>
+                    <TableCell
+                      className={`font-thin text-center ${fillColor(
+                        row.point
+                      )}`}
+                    >
+                      {row.date}
+                    </TableCell>
+                    <TableCell
+                      className={`font-thin text-center ${fillColor(
+                        row.point
+                      )}`}
+                    >
+                      <TextField
+                        size="small"
+                        type="number"
+                        inputProps={{ step: "0.1" }}
+                        defaultValue={row.point}
+                        onChange={(e) =>
+                          handleScoreChange(row.codeStudent, e.target.value)
+                        }
+                        onKeyDown={(e) => handleKeyDown(e, index)}
+                        inputRef={(el) => (textFieldRefs.current[index] = el)} // Lưu ref vào mảng
+                      />
+                    </TableCell>
+                    <TableCell>{row.notes}</TableCell>
+                  </TableRow>
+                ))
+              : null}
           </TableBody>
         </Table>
       </TableContainer>
