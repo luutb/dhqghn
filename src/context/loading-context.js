@@ -16,7 +16,6 @@ export const LoadingProvider = ({ children }) => {
   return (
     <LoadingContext.Provider value={{ loading, showLoading, hideLoading }}>
       {children}
- 
     </LoadingContext.Provider>
   );
 };
