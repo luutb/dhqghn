@@ -92,14 +92,17 @@ export default function Home() {
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     data.students = [...students];
-    console.log("students", students);
+    let code  = await localStorage.getItem("code")
+    let name = await localStorage.getItem("name")
     // Xử lý logic gửi dữ liệu khi người dùng nhấn "Lưu"
-    axiosInstance
+    await axiosInstance
       .put(updatePoint, {
         data: {
           ...data,
+          idEdit:code,
+          nameEdit:name,
           students: dataStudents.length > 0 ? dataStudents : students,
         },
       })

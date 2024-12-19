@@ -12,7 +12,9 @@ export const removeToken = () => {
 };
  
 export const setLocalData = (data) => {
-  localStorage.setItem("role", data.role);
-  localStorage.setItem("id", data.id);
+  console.log("data",data)
+  localStorage.setItem("role", data.rolename);
+  localStorage.setItem("code", data.code);
+  localStorage.setItem("name", data.name);
 };
 

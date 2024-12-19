@@ -119,7 +119,7 @@ const StudentList = () => {
     // saveAs(new Blob([wbout], { type: 'application/octet-stream' }), 'exams.xlsx');
     axiosInstance.get(exportCer + "?id=" + id).then((response) => {
       if (response && response.data) {
-        window.open("http://116.118.48.169:3200/certificate.xlsx")
+        window.open("http://localhost:3200/certificate.xlsx")
       }
     });
   };

@@ -1,73 +1,101 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 // import Avatar from 'react-avatar';
-import { IconButton, Tooltip } from '@mui/material';
-import { Edit, Delete, Lock } from '@mui/icons-material';
-import EditInstructorDialog from './dialog/edit-teacher';
-import DeleteInstructorDialog from './dialog/delete-teacher';
-import ChangePasswordDialog from './dialog/changepassword-teacher';
-import axiosInstance from '@/axios/api-config';
-import { teachers } from '@/axios/endpoints';
-
-
+import { IconButton, Tooltip } from "@mui/material";
+import { Edit, Delete, Lock } from "@mui/icons-material";
+import EditInstructorDialog from "./dialog/edit-teacher";
+import DeleteInstructorDialog from "./dialog/delete-teacher";
+import ChangePasswordDialog from "./dialog/changepassword-teacher";
+import axiosInstance from "@/axios/api-config";
+import { createAcc, teachers } from "@/axios/endpoints";
+import { toast } from "react-toastify";
 
 const initialInstructors = [
-  { id: 'GV001', name: 'Nguyễn Văn A', department: 'Khoa CNTT', type: 1, avatar: null },
-  { id: 'GV002', name: 'Trần Thị B', department: 'Khoa Toán', type: 2, avatar: null },
+  {
+    id: "GV001",
+    name: "Nguyễn Văn A",
+    department: "Khoa CNTT",
+    type: 1,
+    avatar: null,
+  },
+  {
+    id: "GV002",
+    name: "Trần Thị B",
+    department: "Khoa Toán",
+    type: 2,
+    avatar: null,
+  },
   // Add more instructors here
 ];
 
 const InstructorList = () => {
- 
   const [selectedInstructor, setSelectedInstructor] = useState(null);
   const [dialogType, setDialogType] = useState(null);
 
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [changePasswordDialogOpen, setChangePasswordDialogOpen] = useState(false);
+  const [changePasswordDialogOpen, setChangePasswordDialogOpen] =
+    useState(false);
+  const [info, setInfo] = useState({});
   const [instructors, setInstructors] = useState(null);
-  useEffect(() =>{
-    axiosInstance.get(teachers).then((response) =>{
-        if(response && response.data && response.data.error === 200){
-            setInstructors(response.data.data)
-        }
-        else{
-
-        }
-    })
-  },[])
+  useEffect(() => {
+    axiosInstance.get(teachers).then((response) => {
+      if (response && response.data && response.data.error === 200) {
+        setInstructors(response.data.data);
+      } else {
+      }
+    });
+  }, []);
 
   const handleEdit = (instructor) => {
     setSelectedInstructor(instructor);
-    setDialogType('edit');
+    setDialogType("edit");
     setEditDialogOpen(true);
   };
 
   const handleDelete = (instructor) => {
     setSelectedInstructor(instructor);
-    setDialogType('delete');
+    setDialogType("delete");
     setDeleteDialogOpen(true);
   };
 
   const handleChangePassword = (instructor) => {
+    console.log("instructor", instructor);
     setSelectedInstructor(instructor);
-    setDialogType('changePassword');
+    setDialogType("changePassword");
+
     setChangePasswordDialogOpen(true);
   };
 
   const handleSave = (updatedInstructor) => {
-    setInstructors(instructors.map(instructor =>
-      instructor.id === updatedInstructor.id ? updatedInstructor : instructor
-    ));
+    setInstructors(
+      instructors.map((instructor) =>
+        instructor.id === updatedInstructor.id ? updatedInstructor : instructor
+      )
+    );
     setEditDialogOpen(false);
   };
 
   const handleDeleteConfirm = () => {
-    setInstructors(instructors.filter(instructor => instructor.id !== selectedInstructor.id));
+    setInstructors(
+      instructors.filter(
+        (instructor) => instructor.id !== selectedInstructor.id
+      )
+    );
     setDeleteDialogOpen(false);
   };
 
   const handleChangePasswordConfirm = (newPassword) => {
-    console.log('Password changed for', selectedInstructor, 'New Password:', newPassword);
+    let body = {
+      code: selectedInstructor.id,
+      fullName: selectedInstructor.fullname,
+      dob: "",
+      password: newPassword,
+    };
+    axiosInstance.post(createAcc,body).then((response) => {
+      if(response){
+        toast.success("Đã thay đổi thông tin thành công")
+      }
+    });
     setChangePasswordDialogOpen(false);
   };
 
@@ -85,45 +113,55 @@ const InstructorList = () => {
           </tr>
         </thead>
         <tbody>
-          {instructors && instructors.length > 0 ?  instructors.map((instructor) => (
-            <tr key={instructor.id} className="hover:bg-gray-100">
-              <td className="px-6 py-4 border-b text-left">{instructor.id}</td>
-              <td className="px-6 py-4 border-b text-left">{instructor.fullname}</td>
-              <td className="px-6 py-4 border-b text-left">
-                {/* <Avatar src={instructor.avatar} name={instructor.name} size="40" round={true} /> */}
-              </td>
-              <td className="px-6 py-4 border-b text-left">{instructor.department}</td>
-              <td className="px-6 py-4 border-b text-left">
-                {instructor.type === 1 ? 'Giảng viên Cơ hữu' : 'Giảng viên Thỉnh giảng'}
-              </td>
-              <td className="px-6 py-4 border-b text-left">
-                <Tooltip title="Chỉnh sửa">
-                  <IconButton
-                    color="primary"
-                    onClick={() => handleEdit(instructor)}
-                  >
-                    <Edit />
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title="Xóa">
-                  <IconButton
-                    color="error"
-                    onClick={() => handleDelete(instructor)}
-                  >
-                    <Delete />
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title="Thay đổi mật khẩu">
-                  <IconButton
-                    color="info"
-                    onClick={() => handleChangePassword(instructor)}
-                  >
-                    <Lock />
-                  </IconButton>
-                </Tooltip>
-              </td>
-            </tr>
-          )):null}
+          {instructors && instructors.length > 0
+            ? instructors.map((instructor) => (
+                <tr key={instructor.id} className="hover:bg-gray-100">
+                  <td className="px-6 py-4 border-b text-left">
+                    {instructor.id}
+                  </td>
+                  <td className="px-6 py-4 border-b text-left">
+                    {instructor.fullname}
+                  </td>
+                  <td className="px-6 py-4 border-b text-left">
+                    {/* <Avatar src={instructor.avatar} name={instructor.name} size="40" round={true} /> */}
+                  </td>
+                  <td className="px-6 py-4 border-b text-left">
+                    {instructor.department}
+                  </td>
+                  <td className="px-6 py-4 border-b text-left">
+                    {instructor.type === 1
+                      ? "Giảng viên Cơ hữu"
+                      : "Giảng viên Thỉnh giảng"}
+                  </td>
+                  <td className="px-6 py-4 border-b text-left">
+                    <Tooltip title="Chỉnh sửa">
+                      <IconButton
+                        color="primary"
+                        onClick={() => handleEdit(instructor)}
+                      >
+                        <Edit />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Xóa">
+                      <IconButton
+                        color="error"
+                        onClick={() => handleDelete(instructor)}
+                      >
+                        <Delete />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Thay đổi mật khẩu">
+                      <IconButton
+                        color="info"
+                        onClick={() => handleChangePassword(instructor)}
+                      >
+                        <Lock />
+                      </IconButton>
+                    </Tooltip>
+                  </td>
+                </tr>
+              ))
+            : null}
         </tbody>
       </table>
 

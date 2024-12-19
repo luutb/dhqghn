@@ -67,6 +67,12 @@ const nextConfig = {
         destination: '/admin/dashboard/courses/:id', 
              // Đường dẫn nội bộ của ứng dụng
       },
+      {
+        source: '/lich-su-sua/:id',            // Đường dẫn yêu cầu từ phía người dùng
+        destination: '/admin/dashboard/history/:id', 
+             // Đường dẫn nội bộ của ứng dụng
+      },
+      
       {  
         source: '/quan-ly-lich-lam-viec',            // Đường dẫn yêu cầu từ phía người dùng
         destination: '/admin/dashboard/calendar-daily', 

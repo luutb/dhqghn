@@ -34,13 +34,13 @@ import {
   GetApp as GetAppIcon,
   Add as AddIcon,
   Upload as UploadIcon,
- 
 } from "@mui/icons-material";
-import HistoryIcon from '@mui/icons-material/History';
+import HistoryIcon from "@mui/icons-material/History";
 import axiosInstance from "@/axios/api-config";
 import {
   courses,
   downloadCourse,
+  historyEdit,
   subjects,
   universitys,
   updatePoints,
@@ -48,7 +48,7 @@ import {
   uploadCourse,
 } from "@/axios/endpoints";
 import { toast } from "react-toastify";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 // import * as XLSX from 'xlsx';
 // import { saveAs } from 'file-saver';
 const cohorts = ["23", "22", "21", "20", "19", "18"];
@@ -67,7 +67,7 @@ const exams = [
   // Add more items here
 ];
 
-function TableCourse() {
+function TableHistoryCourse() {
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [selectedExam, setSelectedExam] = useState(null);
   const [coursesState, setCourses] = useState([]);
@@ -80,6 +80,8 @@ function TableCourse() {
   const fileInputRef = useRef(null);
   const [schools, setSchools] = useState([]);
   const [isStatus, setIsStatus] = useState(false);
+  const params = useParams();
+  const id = decodeURIComponent(params.id.toString());
 
   const [isCheckbox, setIsCheckbox] = useState([]);
   const handleFileChange = (e) => {
@@ -108,7 +110,7 @@ function TableCourse() {
   useEffect(() => {
     if (refresh) {
       axiosInstance
-        .get(courses)
+        .get(`${historyEdit}?id=` + id)
         .then((response) => {
           if (response && response.data && response.data.data) {
             setCourses([...response.data.data]);
@@ -122,9 +124,7 @@ function TableCourse() {
   }, [refresh]);
   const handleFind = () => {
     axiosInstance
-      .get(
-        `${courses}?nameCourse=${searchTerm}&univercity=${selectedSchool}&codeCourse=${selectedCohort}`
-      )
+      .get(historyEdit)
       .then((response) => {
         if (response && response.data && response.data.data) {
           setCourses([...response.data.data]);
@@ -149,9 +149,7 @@ function TableCourse() {
   const navigationCourse = (id) => {
     router.push("/quan-ly-thi/" + id);
   };
-  const navigationHistory = (id) =>{
-    router.push("/lich-su-sua/" + id);
-  }
+
   const handleSwitchCase = (id) => {
     axiosInstance.put(updateStatusCourse + "?id=" + id).then((response) => {
       if (response && response.data) {
@@ -273,98 +271,6 @@ function TableCourse() {
     <div className="w-full">
       <Box>
         <Paper elevation={4} className="flex flex-col bg-white ">
-          <Toolbar className="flex flex-row justify-center items-center w-full">
-            <Typography variant="h4" sx={{ flexGrow: 1, color: "#1976d2" }}>
-              Quản lý phòng thi
-            </Typography>
-            <div className=" flex w-[70%] flex-wrap gap-4 bg-white ">
-              <TextField
-                label="Tìm kiếm tên môn thi"
-                variant="outlined"
-                defaultValue={searchTerm}
-                onChange={handleSearchChange}
-                className="flex-1 min-w-[200px]"
-                size="small"
-              />
-              <FormControl
-                variant="outlined"
-                className="flex-1 min-w-[200px]"
-                size="small"
-              >
-                <InputLabel>Trường</InputLabel>
-                <Select
-                  value={selectedSchool}
-                  onChange={handleSchoolChange}
-                  label="Trường"
-                >
-                  <MenuItem value="">
-                    <em>Tất cả</em>
-                  </MenuItem>
-                  {schools.map((school) => (
-                    <MenuItem key={school} value={school}>
-                      {school.name}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-              <FormControl
-                variant="outlined"
-                className="flex-1 min-w-[200px]"
-                size="small"
-              >
-                <InputLabel>Môn học</InputLabel>
-                <Select
-                  value={selectedCohort}
-                  onChange={handleCohortChange}
-                  label="Khóa"
-                >
-                  <MenuItem value="">
-                    <em>Tất cả</em>
-                  </MenuItem>
-                  {subjectsState.map((subject) => (
-                    <MenuItem key={subject.id} value={subject.code}>
-                      {subject.nameSubject}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-              <button
-                className="bg-blue-500 text-white rounded text-base font-bold p-1"
-                onClick={() => {
-                  handleFind();
-                }}
-              >
-                <div className="w-[100px]  rounded">Tìm kiếm</div>
-              </button>
-            </div>
-            <Box>
-              <Tooltip title="Đóng/Mở môn thi" arrow>
-                <Switch
-                  defaultChecked={false}
-                  color="secondary"
-                  onChange={(event) => {
-                    handleSwitchCaseAll(event);
-                  }}
-                />
-              </Tooltip>
-
-              <input
-                type="file"
-                ref={fileInputRef}
-                style={{ display: "none" }} // Ẩn input file
-                onChange={handleFileChange}
-              />
-              <Tooltip title="Thêm mới Excel" arrow>
-                <IconButton
-                  color="primary"
-                  onClick={() => fileInputRef.current.click()}
-                  sx={{ mr: 1 }}
-                >
-                  <UploadIcon />
-                </IconButton>
-              </Tooltip>
-            </Box>
-          </Toolbar>
           <TableContainer>
             <Table>
               <TableHead>
@@ -379,8 +285,8 @@ function TableCourse() {
                   <TableCell>Ngày thi</TableCell>
                   <TableCell>Kì học</TableCell>
                   <TableCell>Tên trường học</TableCell>
-                  <TableCell>Trạng thái</TableCell>
-                  <TableCell>Số lượng sinh viên</TableCell>
+                  <TableCell>Người sửa điểm</TableCell>
+                
                   <TableCell>Hành động</TableCell>
                 </TableRow>
               </TableHead>
@@ -404,50 +310,11 @@ function TableCourse() {
                     <TableCell>{exam.semester}</TableCell>
                     <TableCell>{exam.nameSchool}</TableCell>
                     <TableCell>
-                      <Switch
-                        checked={exam.status}
-                        color="secondary"
-                        onChange={() => {
-                          handleSwitchCase(exam.id);
-                        }}
-                      />
+                    <TableCell>{exam.nameEdit}</TableCell>
                     </TableCell>
-                    <TableCell>{exam.students.length}</TableCell>
+                   
                     <TableCell>
-                      <Tooltip title="Xem chi tiết" arrow>
-                        <IconButton
-                          onClick={() => navigationCourse(exam.id)}
-                          color="info"
-                        >
-                          <VisibilityIcon />
-                        </IconButton>
-                      </Tooltip>
-                      <Tooltip title="Xóa môn thi" arrow>
-                        <IconButton
-                          onClick={() => handleDeleteClick(exam)}
-                          color="error"
-                        >
-                          <DeleteIcon />
-                        </IconButton>
-                      </Tooltip>
-                      <Tooltip title="Tải xuống chi tiết" arrow>
-                      <IconButton
-                        onClick={() => {
-                          handleDownloadClick(exam.id);
-                        }}
-                        color="success"
-                      >
-                        <GetAppIcon />
-                      </IconButton>
-                      </Tooltip>
-                      <Tooltip title="Lịch sử sửa điểm" arrow>
-                        <IconButton
-                          onClick={() => navigationHistory(exam.id)}
-                          color="error"
-                        >
-                          <HistoryIcon />
-                        </IconButton>
-                      </Tooltip>
+                    
                     </TableCell>
                   </TableRow>
                 ))}
@@ -475,4 +342,4 @@ function TableCourse() {
   );
 }
 
-export default TableCourse;
+export default TableHistoryCourse;

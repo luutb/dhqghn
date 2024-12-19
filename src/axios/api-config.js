@@ -2,8 +2,8 @@ import axios from 'axios';
 import { getToken, removeToken } from './handle-token'; // Giả sử bạn có các hàm này để quản lý token
 
 const axiosInstance = axios.create({
-  baseURL: 'http://116.118.48.169:3200', // Thay đổi thành API cơ sở của bạn
-  timeout: 10000, // Thay đổi thời gian chờ nếu cần
+  baseURL: 'http://localhost:3200', // Thay đổi thành API cơ sở của bạn
+  timeout: 60000, // Thay đổi thời gian chờ nếu cần
   headers: {
     'Content-Type': 'application/json',
   },
