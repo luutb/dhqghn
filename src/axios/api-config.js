@@ -2,8 +2,8 @@ import axios from 'axios';
 import { getToken, removeToken } from './handle-token'; // Giả sử bạn có các hàm này để quản lý token
 
 const axiosInstance = axios.create({
-  //https//:db02.cvnl.me
-  baseURL: 'https//:db02.cvnl.me', // Thay đổi thành API cơ sở của bạn
+  //localhost
+  baseURL:'https://db02.cvnl.me', // Thay đổi thành API cơ sở của bạn
   timeout: 60000, // Thay đổi thời gian chờ nếu cần
   headers: {
     'Content-Type': 'application/json',
