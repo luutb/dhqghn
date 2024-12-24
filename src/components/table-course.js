@@ -123,7 +123,7 @@ function TableCourse() {
   const handleFind = () => {
     axiosInstance
       .get(
-        `${courses}?nameCourse=${searchTerm}&univercity=${selectedSchool}&codeCourse=${selectedCohort}`
+        `${courses}?nameCourse=${searchTerm}&univercity=${selectedSchool.name}&codeCourse=${selectedCohort}`
       )
       .then((response) => {
         if (response && response.data && response.data.data) {
@@ -184,9 +184,7 @@ function TableCourse() {
     setSelectedCohort(event.target.value);
   };
   const uploadFile = async (_file) => {
-    console.log("_file", _file);
     if (!_file) {
-      console.log("_file");
       return;
     }
     const formData = new FormData();

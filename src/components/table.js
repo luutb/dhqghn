@@ -1,6 +1,6 @@
 // StudentList.js
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   IconButton,
   Table,
@@ -16,14 +16,25 @@ import {
   InputLabel,
   FormControl,
   Divider,
+  Box,
+  Tooltip,
+  Switch,
 } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import DownloadIcon from "@mui/icons-material/Download";
 import axiosInstance from "@/axios/api-config";
-import { exportCer, findStudent, liststudent, universitys } from "@/axios/endpoints";
+import {
+  exportCer,
+  findStudent,
+  importSv,
+  liststudent,
+  universitys,
+} from "@/axios/endpoints";
 import { useLoading } from "@/context/loading-context";
 import { useRouter } from "next/navigation";
-
+import { toast } from "react-toastify";
+import { Upload as UploadIcon } from "@mui/icons-material";
+import moment from "moment";
 const initialStudents = [
   {
     id: "S001",
@@ -51,7 +62,7 @@ const initialStudents = [
 ];
 
 // const schools = ['Trường A', 'Trường B', 'Trường C'];
-const cohorts = ["23","22","21","20", "19", "18"];
+const cohorts = ["23", "22", "21", "20", "19", "18"];
 
 const StudentList = () => {
   const [students, setStudents] = useState([]);
@@ -59,17 +70,22 @@ const StudentList = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedSchool, setSelectedSchool] = useState(null);
   const [selectedCohort, setSelectedCohort] = useState(null);
-  const {showLoading,hideLoading} = useLoading() 
-  const router = useRouter()
+  const { showLoading, hideLoading } = useLoading();
+  const router = useRouter();
+  const fileInputRef = useRef(null);
+
   useEffect(() => {
-    showLoading()
-    axiosInstance.get(liststudent).then((response) => {
-      if (response && response.data && response.data.data) {
-        setStudents(response.data.data);
-      }
-    }).finally(()=>{
-      hideLoading();
-    });
+    showLoading();
+    axiosInstance
+      .get(liststudent)
+      .then((response) => {
+        if (response && response.data && response.data.data) {
+          setStudents(response.data.data);
+        }
+      })
+      .finally(() => {
+        hideLoading();
+      });
   }, []);
   useEffect(() => {
     axiosInstance.get(universitys).then((response) => {
@@ -78,22 +94,51 @@ const StudentList = () => {
       }
     });
   }, []);
-  const handleFind = () =>{
+
+  const handleFileChange = (e) => {
+    uploadFile(e.target.files[0]);
+  };
+  const renderSchool = (code) => {
+    return schools.find((m) => m.code == code)?.name ?? "";
+  };
+  const uploadFile = async (_file) => {
+    if (!_file) {
+      return;
+    }
+    const formData = new FormData();
+    formData.append("students", _file);
+    try {
+      axiosInstance
+        .post(importSv, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then((response) => {
+          if (response && response.data) {
+            toast.success("Cập nhật trạng thái thành công");
+            window.location.reload();
+          }
+        });
+    } catch (error) {
+      console.error("Error uploading file:", error);
+    }
+  };
+  const handleFind = () => {
     let body = {
       nameStudent: searchTerm,
-      university: selectedSchool?.name ??"",
-      scholastic: selectedCohort ?? 0
-    }
-  
-    axiosInstance.post(findStudent,body).then((response) =>{
+      university: selectedSchool?.code ?? "",
+      scholastic: selectedCohort ?? 0,
+    };
+
+    axiosInstance.post(findStudent, body).then((response) => {
       if (response && response.data && response.data.data) {
         setStudents([...response.data.data]);
+      } else {
+        setStudents([]);
       }
-      else{
-        setStudents([])
-      }
-    })
-  }
+    });
+  };
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
   };
@@ -102,13 +147,11 @@ const StudentList = () => {
     router.push("/quan-ly-sinh-vien/" + id);
   };
   const handleSchoolChange = (event) => {
-    console.log("event.target.value",event.target.value)
-    if(event.target.value){
+    if (event.target.value) {
       setSelectedSchool(event.target.value ?? "");
+    } else {
+      setSelectedSchool("");
     }
-  else{
-    setSelectedSchool("")
-  }
   };
 
   const handleDownloadClick = (id) => {
@@ -119,7 +162,7 @@ const StudentList = () => {
     // saveAs(new Blob([wbout], { type: 'application/octet-stream' }), 'exams.xlsx');
     axiosInstance.get(exportCer + "?id=" + id).then((response) => {
       if (response && response.data) {
-        window.open("http://localhost:3200/certificate.xlsx")
+        window.open("http://localhost:3200/certificate.xlsx");
       }
     });
   };
@@ -192,9 +235,30 @@ const StudentList = () => {
             ))}
           </Select>
         </FormControl>
-        <button onClick={() =>{handleFind()}}>
+        <button
+          onClick={() => {
+            handleFind();
+          }}
+        >
           <div className="w-[100px]  rounded">Tìm kiếm</div>
         </button>
+        <Box>
+          <input
+            type="file"
+            ref={fileInputRef}
+            style={{ display: "none" }} // Ẩn input file
+            onChange={handleFileChange}
+          />
+          <Tooltip title="Thêm mới Excel" arrow>
+            <IconButton
+              color="primary"
+              onClick={() => fileInputRef.current.click()}
+              sx={{ mr: 1 }}
+            >
+              <UploadIcon />
+            </IconButton>
+          </Tooltip>
+        </Box>
       </div>
 
       <TableContainer component={Paper} className="shadow-lg">
@@ -204,6 +268,7 @@ const StudentList = () => {
               <TableCell className="font-semibold">Mã sinh viên</TableCell>
               <TableCell className="font-semibold">Tên sinh viên</TableCell>
               <TableCell className="font-semibold">Giới tính</TableCell>
+              <TableCell className="font-semibold">Năm sinh</TableCell>
               <TableCell className="font-semibold">Địa chỉ</TableCell>
               <TableCell className="font-semibold">Ngành học</TableCell>
               <TableCell className="font-semibold">Lớp học</TableCell>
@@ -218,17 +283,30 @@ const StudentList = () => {
                 <TableCell className="py-0">{student.id}</TableCell>
                 <TableCell className="py-0">{student.fullName}</TableCell>
                 <TableCell className="py-0">{student.gender}</TableCell>
+                <TableCell className="py-0">
+                  {moment(student.dob).format("DD/MM/YYYY")}
+                </TableCell>
                 <TableCell className="py-0">{student.address}</TableCell>
                 <TableCell className="py-0">{student.specialized}</TableCell>
                 <TableCell className="py-0">{student.className}</TableCell>
-                <TableCell className="py-0">{student.nameUniversity}</TableCell>
+                <TableCell className="py-0">
+                  {renderSchool(student.nameUniversity)}
+                </TableCell>
                 <TableCell className="py-0">{student.scholastic}</TableCell>
                 <TableCell className="py-0">
                   <div className="flex space-x-2 justify-center">
-                    <IconButton color="primary" onClick={() =>navigationCourse(student.id)}>
+                    <IconButton
+                      color="primary"
+                      onClick={() => navigationCourse(student.id)}
+                    >
                       <VisibilityIcon />
                     </IconButton>
-                    <IconButton color="secondary" onClick={() =>{handleDownloadClick(student.id)}}>
+                    <IconButton
+                      color="secondary"
+                      onClick={() => {
+                        handleDownloadClick(student.id);
+                      }}
+                    >
                       <DownloadIcon />
                     </IconButton>
                   </div>
