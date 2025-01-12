@@ -7,27 +7,17 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  IconButton,
-  Switch,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
   Button,
-  Typography,
   Paper,
-  Container,
   Box,
-  Toolbar,
-  InputLabel,
-  FormControl,
-  MenuItem,
-  Select,
-  TextField,
   Tooltip,
+  IconButton,
 } from "@mui/material";
 import Checkbox from "@mui/material/Checkbox";
-
 import {
   Visibility as VisibilityIcon,
   Delete as DeleteIcon,
@@ -35,10 +25,8 @@ import {
   Add as AddIcon,
   Upload as UploadIcon,
 } from "@mui/icons-material";
-import HistoryIcon from "@mui/icons-material/History";
 import axiosInstance from "@/axios/api-config";
 import {
-  courses,
   downloadCourse,
   historyEdit,
   subjects,
@@ -147,17 +135,9 @@ function TableHistoryCourse() {
     });
   };
   const navigationCourse = (id) => {
-    router.push("/quan-ly-thi/" + id);
+    router.push("/chi-tiet/" + id);
   };
 
-  const handleSwitchCase = (id) => {
-    axiosInstance.put(updateStatusCourse + "?id=" + id).then((response) => {
-      if (response && response.data) {
-        toast.success("Cập nhật trạng thái thành công");
-        setRefresh(true);
-      }
-    });
-  };
   const handleConfirmDelete = () => {
     // Implement delete functionality here
     deleteCourse(selectedExam.id);
@@ -286,7 +266,7 @@ function TableHistoryCourse() {
                   <TableCell>Kì học</TableCell>
                   <TableCell>Tên trường học</TableCell>
                   <TableCell>Người sửa điểm</TableCell>
-                
+
                   <TableCell>Hành động</TableCell>
                 </TableRow>
               </TableHead>
@@ -310,11 +290,18 @@ function TableHistoryCourse() {
                     <TableCell>{exam.semester}</TableCell>
                     <TableCell>{exam.nameSchool}</TableCell>
                     <TableCell>
-                    <TableCell>{exam.nameEdit}</TableCell>
+                      <TableCell>{exam.nameEdit}</TableCell>
                     </TableCell>
-                   
+
                     <TableCell>
-                    
+                      <Tooltip title="Xem chi tiết" arrow>
+                        <IconButton
+                          onClick={() => navigationCourse(exam.id)}
+                          color="info"
+                        >
+                          <VisibilityIcon />
+                        </IconButton>
+                      </Tooltip>
                     </TableCell>
                   </TableRow>
                 ))}

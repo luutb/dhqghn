@@ -1,7 +1,15 @@
-import React from 'react';
-import { Bar } from 'react-chartjs-2';
-import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js';
-import { Container, Typography } from '@mui/material';
+import React from "react";
+import { Bar } from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  Title,
+  Tooltip,
+  Legend,
+  BarElement,
+  CategoryScale,
+  LinearScale,
+} from "chart.js";
+import { Container, Typography } from "@mui/material";
 
 // Đăng ký các thành phần của Chart.js
 ChartJS.register(
@@ -18,17 +26,17 @@ const BarChartComponent = ({ data }) => {
     labels: data.labels,
     datasets: [
       {
-        label: 'Số lượng sinh viên đạt',
-        data: data.datasets.map(item => item.passed),
-        backgroundColor: 'rgba(75, 192, 192, 0.5)',
-        borderColor: 'rgba(75, 192, 192, 1)',
+        label: "Số lượng sinh viên đạt",
+        data: data.datasets.map((item) => item.approve),
+        backgroundColor: "rgba(75, 192, 192, 0.5)",
+        borderColor: "rgba(75, 192, 192, 1)",
         borderWidth: 1,
       },
       {
-        label: 'Số lượng sinh viên không đạt',
-        data: data.datasets.map(item => item.failed),
-        backgroundColor: 'rgba(255, 99, 132, 0.5)',
-        borderColor: 'rgba(255, 99, 132, 1)',
+        label: "Số lượng sinh viên không đạt",
+        data: data.datasets.map((item) => item.unapprove),
+        backgroundColor: "rgba(255, 99, 132, 0.5)",
+        borderColor: "rgba(255, 99, 132, 1)",
         borderWidth: 1,
       },
     ],
@@ -45,11 +53,11 @@ const BarChartComponent = ({ data }) => {
           responsive: true,
           plugins: {
             legend: {
-              position: 'top',
+              position: "top",
             },
             title: {
               display: true,
-              text: 'Biểu đồ số lượng sinh viên đạt và không đạt',
+              text: "Biểu đồ số lượng sinh viên đạt và không đạt",
             },
           },
         }}

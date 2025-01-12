@@ -70,11 +70,8 @@ export default function PreviewCertificate() {
                     <TableCell className="font-bold">
                       {course.nameSchool}
                     </TableCell>
-                    <TableCell className="font-bold">
-                      {course.point}
-                    </TableCell>
+                    <TableCell className="font-bold">{course.point}</TableCell>
                     <TableCell className=" font-bold">
-                      {" "}
                       <div
                         className={`${
                           Number(course.point) > 4
