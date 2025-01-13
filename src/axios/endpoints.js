@@ -20,9 +20,10 @@ const preview = "/api/v1/preview";
 const exportCer = "/api/v1/exportCer";
 const subjects = "/api/v1/subjects";
 const updatePoints = "/api/v1/updatePoints";
-const createAcc = "/api/v1/createAccount"
-const historyEdit = "/api/v1/gethistory"
-const importSv= "/api/v1/importStudent"
+const createAcc = "/api/v1/createAccount";
+const historyEdit = "/api/v1/gethistory";
+const importSv = "/api/v1/importStudent";
+const report = "/api/v1/report";
 export {
   updatePoints,
   subjects,
@@ -48,5 +49,6 @@ export {
   exportCer,
   createAcc,
   historyEdit,
-  importSv
+  importSv,
+  report,
 };
