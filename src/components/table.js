@@ -1,6 +1,6 @@
 // StudentList.js
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+import React, { Suspense, useEffect, useRef, useState } from "react";
 import {
   IconButton,
   Table,
@@ -19,7 +19,10 @@ import {
   Box,
   Tooltip,
   Switch,
+  CircularProgress,
 } from "@mui/material";
+import { Spinner } from "@nextui-org/spinner";
+
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import DownloadIcon from "@mui/icons-material/Download";
 import axiosInstance from "@/axios/api-config";
@@ -70,10 +73,9 @@ const StudentList = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedSchool, setSelectedSchool] = useState(null);
   const [selectedCohort, setSelectedCohort] = useState(null);
-  const { showLoading, hideLoading } = useLoading();
+  const { showLoading, hideLoading, loading } = useLoading();
   const router = useRouter();
   const fileInputRef = useRef(null);
-
   useEffect(() => {
     showLoading();
     axiosInstance
@@ -125,6 +127,7 @@ const StudentList = () => {
     }
   };
   const handleFind = () => {
+    showLoading()
     let body = {
       nameStudent: searchTerm,
       university: selectedSchool?.code ?? "",
@@ -137,6 +140,7 @@ const StudentList = () => {
       } else {
         setStudents([]);
       }
+      hideLoading()
     });
   };
   const handleSearchChange = (event) => {
@@ -183,7 +187,6 @@ const StudentList = () => {
       <h1 className="text-3xl font-bold mb-4 text-center text-gray-800">
         Danh sách sinh viên
       </h1>
-
       <div className="mb-6 flex w-[70%] flex-wrap gap-4 bg-white">
         <TextField
           label="Tìm kiếm tên hoặc mã sinh viên"
@@ -260,62 +263,68 @@ const StudentList = () => {
           </Tooltip>
         </Box>
       </div>
-
-      <TableContainer component={Paper} className="shadow-lg">
-        <Table>
-          <TableHead>
-            <TableRow className="bg-gray-200">
-              <TableCell className="font-semibold">Mã sinh viên</TableCell>
-              <TableCell className="font-semibold">Tên sinh viên</TableCell>
-              <TableCell className="font-semibold">Giới tính</TableCell>
-              <TableCell className="font-semibold">Năm sinh</TableCell>
-              <TableCell className="font-semibold">Địa chỉ</TableCell>
-              <TableCell className="font-semibold">Ngành học</TableCell>
-              <TableCell className="font-semibold">Lớp học</TableCell>
-              <TableCell className="font-semibold">Trường</TableCell>
-              <TableCell className="font-semibold">Khóa</TableCell>
-              <TableCell className="font-semibold">Hành động</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {students.map((student) => (
-              <TableRow key={student.id} className="hover:bg-gray-100 h-[30px]">
-                <TableCell className="py-0">{student.id}</TableCell>
-                <TableCell className="py-0">{student.fullName}</TableCell>
-                <TableCell className="py-0">{student.gender}</TableCell>
-                <TableCell className="py-0">
-                  {moment(student.dob).format("DD/MM/YYYY")}
-                </TableCell>
-                <TableCell className="py-0">{student.address}</TableCell>
-                <TableCell className="py-0">{student.specialized}</TableCell>
-                <TableCell className="py-0">{student.className}</TableCell>
-                <TableCell className="py-0">
-                  {renderSchool(student.nameUniversity)}
-                </TableCell>
-                <TableCell className="py-0">{student.scholastic}</TableCell>
-                <TableCell className="py-0">
-                  <div className="flex space-x-2 justify-center">
-                    <IconButton
-                      color="primary"
-                      onClick={() => navigationCourse(student.id)}
-                    >
-                      <VisibilityIcon />
-                    </IconButton>
-                    <IconButton
-                      color="secondary"
-                      onClick={() => {
-                        handleDownloadClick(student.id);
-                      }}
-                    >
-                      <DownloadIcon />
-                    </IconButton>
-                  </div>
-                </TableCell>
+      {loading ? (
+        <div className="flex justify-center items-center"> <CircularProgress /></div>
+      ) : (
+        <TableContainer component={Paper} className="shadow-lg">
+          <Table>
+            <TableHead>
+              <TableRow className="bg-gray-200">
+                <TableCell className="font-semibold">Mã sinh viên</TableCell>
+                <TableCell className="font-semibold">Tên sinh viên</TableCell>
+                <TableCell className="font-semibold">Giới tính</TableCell>
+                <TableCell className="font-semibold">Năm sinh</TableCell>
+                <TableCell className="font-semibold">Địa chỉ</TableCell>
+                <TableCell className="font-semibold">Ngành học</TableCell>
+                <TableCell className="font-semibold">Lớp học</TableCell>
+                <TableCell className="font-semibold">Trường</TableCell>
+                <TableCell className="font-semibold">Khóa</TableCell>
+                <TableCell className="font-semibold">Hành động</TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+            </TableHead>
+            <TableBody>
+              {students.map((student) => (
+                <TableRow
+                  key={student.id}
+                  className="hover:bg-gray-100 h-[30px]"
+                >
+                  <TableCell className="py-0">{student.id}</TableCell>
+                  <TableCell className="py-0">{student.fullName}</TableCell>
+                  <TableCell className="py-0">{student.gender}</TableCell>
+                  <TableCell className="py-0">
+                    {moment(student.dob).format("DD/MM/YYYY")}
+                  </TableCell>
+                  <TableCell className="py-0">{student.address}</TableCell>
+                  <TableCell className="py-0">{student.specialized}</TableCell>
+                  <TableCell className="py-0">{student.className}</TableCell>
+                  <TableCell className="py-0">
+                    {renderSchool(student.nameUniversity)}
+                  </TableCell>
+                  <TableCell className="py-0">{student.scholastic}</TableCell>
+                  <TableCell className="py-0">
+                    <div className="flex space-x-2 justify-center">
+                      <IconButton
+                        color="primary"
+                        onClick={() => navigationCourse(student.id)}
+                      >
+                        <VisibilityIcon />
+                      </IconButton>
+                      <IconButton
+                        color="secondary"
+                        onClick={() => {
+                          handleDownloadClick(student.id);
+                        }}
+                      >
+                        <DownloadIcon />
+                      </IconButton>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      )}
     </div>
   );
 };
