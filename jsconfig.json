@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "module": "es2015",
+    "target": "es6",
+    "jsx": "preserve",
+    "checkJs": true,
+    "moduleResolution":"node",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
+  "exclude": [
+    "node_modules"
+  ]
+}
