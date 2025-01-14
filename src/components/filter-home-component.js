@@ -28,6 +28,7 @@ const FilterComponent = ({
     axiosInstance.get(universitys).then((response) => {
       if (response && response.data && response.data.data) {
         setSchools([...response.data.data]);
+        setSchool(response.data.data[0])
       }
     });
   }, []);
@@ -35,6 +36,7 @@ const FilterComponent = ({
     axiosInstance.get(subjects).then((response) => {
       if (response && response.data && response.data.data) {
         setSubjects([...response.data.data]);
+        
       }
     });
   }, []);

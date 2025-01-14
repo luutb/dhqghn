@@ -35,18 +35,20 @@ const StatisticsPage = () => {
   useEffect(() => {
     // Giả lập tải dữ liệu dựa trên các bộ lọc
     // Thay thế mockData bằng dữ liệu thực tế từ API
-    axiosInstance
-      .post(report, {
-        nameSchool: "TRƯỜNG ĐẠI HỌC KHOA HỌC TỰ NHIÊN",
-      })
-      .then((res) => {
-        const labels = res.data.map((m) => m.codeCourse);
-        setChartData({
-          labels: labels,
-          datasets: res.data,
+    if (school) {
+      axiosInstance
+        .post(report, {
+          nameSchool: school.name.toUpperCase(),
+        })
+        .then((res) => {
+          const labels = res.data.map((m) => m.codeCourse);
+          setChartData({
+            labels: labels,
+            datasets: res.data,
+          });
         });
-      });
-  }, []);
+    }
+  }, [school]);
 
   const handleFilter = () => {
     // Thực hiện hành động lọc dữ liệu và cập nhật biểu đồ

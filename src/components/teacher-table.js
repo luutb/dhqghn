@@ -6,7 +6,7 @@ import EditInstructorDialog from "./dialog/edit-teacher";
 import DeleteInstructorDialog from "./dialog/delete-teacher";
 import ChangePasswordDialog from "./dialog/changepassword-teacher";
 import axiosInstance from "@/axios/api-config";
-import { createAcc, teachers } from "@/axios/endpoints";
+import { createAcc, teacher, teachers } from "@/axios/endpoints";
 import { toast } from "react-toastify";
 
 const initialInstructors = [
@@ -69,19 +69,30 @@ const InstructorList = () => {
   const handleSave = (updatedInstructor) => {
     setInstructors(
       instructors.map((instructor) =>
-        instructor.id === updatedInstructor.id ? updatedInstructor : instructor
+        instructor._id === updatedInstructor._id ? updatedInstructor : instructor
       )
     );
     setEditDialogOpen(false);
   };
 
   const handleDeleteConfirm = () => {
-    setInstructors(
-      instructors.filter(
-        (instructor) => instructor.id !== selectedInstructor.id
-      )
-    );
-    setDeleteDialogOpen(false);
+    axiosInstance.delete(`${teacher}?id=${selectedInstructor._id}`).then((response) =>{
+      if(response){
+        toast.success("Đã xóa thành công giảng viên")
+        setInstructors(
+          instructors.filter(
+            (instructor) => instructor._id !== selectedInstructor._id
+          )
+        );
+        
+        setDeleteDialogOpen(false);
+      }
+      else{
+        toast.error("Đã có lỗi xảy ra")
+        setDeleteDialogOpen(false);
+      }
+    })
+   
   };
 
   const handleChangePasswordConfirm = (newPassword) => {
@@ -115,9 +126,9 @@ const InstructorList = () => {
         <tbody>
           {instructors && instructors.length > 0
             ? instructors.map((instructor) => (
-                <tr key={instructor.id} className="hover:bg-gray-100">
+                <tr key={instructor._id} className="hover:bg-gray-100">
                   <td className="px-6 py-4 border-b text-left">
-                    {instructor.id}
+                    {instructor._id}
                   </td>
                   <td className="px-6 py-4 border-b text-left">
                     {instructor.fullname}
