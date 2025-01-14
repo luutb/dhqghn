@@ -34,9 +34,8 @@ import {
   GetApp as GetAppIcon,
   Add as AddIcon,
   Upload as UploadIcon,
- 
 } from "@mui/icons-material";
-import HistoryIcon from '@mui/icons-material/History';
+import HistoryIcon from "@mui/icons-material/History";
 import axiosInstance from "@/axios/api-config";
 import {
   courses,
@@ -134,24 +133,53 @@ function TableCourse() {
         setRefresh(false);
       });
   };
-  const handleDownloadClick = (id) => {
+  const handleDownloadClick = (exam) => {
     // const ws = XLSX.utils.json_to_sheet(exams);
     // const wb = XLSX.utils.book_new();
     // XLSX.utils.book_append_sheet(wb, ws, 'Exams');
     // const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
     // saveAs(new Blob([wbout], { type: 'application/octet-stream' }), 'exams.xlsx');
-    axiosInstance.get(downloadCourse + "?id=" + id).then((response) => {
-      if (response && response.data) {
-        window.open("http://116.118.48.169:3200/export.xlsx");
-      }
-    });
+    try {
+      axiosInstance
+        .get(downloadCourse + "?id=" + exam.id, {
+          responseType: "blob", // Nhận dữ liệu tệp dưới dạng blob
+        })
+        .then((response) => {
+          const url = window.URL.createObjectURL(new Blob([response.data]));
+
+          // Gắn tên tệp từ `Content-Disposition` header
+          const contentDisposition = response.headers["content-disposition"];
+          let fileName = `${exam.codeCourse}-${exam.nameSchool.replaceAll(" ","_")}.xlsx`;
+
+          if (contentDisposition && contentDisposition.includes("filename=")) {
+            fileName = contentDisposition
+              .split("filename=")[1]
+              .replace(/"/g, ""); // Lấy tên tệp từ header
+          }
+
+          // Tạo một thẻ <a> để tải tệp
+          const link = document.createElement("a");
+          link.href = url;
+          link.setAttribute("download", fileName);
+          document.body.appendChild(link);
+          link.click();
+
+          // Dọn dẹp blob URL
+          window.URL.revokeObjectURL(url);
+          // if (response && response.data) {
+          //   window.open("http://116.118.48.169:3200/export.xlsx");
+          // }
+        });
+    } catch (error) {
+      console.error("Error downloading file", error);
+    }
   };
   const navigationCourse = (id) => {
     router.push("/quan-ly-thi/" + id);
   };
-  const navigationHistory = (id) =>{
+  const navigationHistory = (id) => {
     router.push("/lich-su-sua/" + id);
-  }
+  };
   const handleSwitchCase = (id) => {
     axiosInstance.put(updateStatusCourse + "?id=" + id).then((response) => {
       if (response && response.data) {
@@ -429,14 +457,14 @@ function TableCourse() {
                         </IconButton>
                       </Tooltip>
                       <Tooltip title="Tải xuống chi tiết" arrow>
-                      <IconButton
-                        onClick={() => {
-                          handleDownloadClick(exam.id);
-                        }}
-                        color="success"
-                      >
-                        <GetAppIcon />
-                      </IconButton>
+                        <IconButton
+                          onClick={() => {
+                            handleDownloadClick(exam);
+                          }}
+                          color="success"
+                        >
+                          <GetAppIcon />
+                        </IconButton>
                       </Tooltip>
                       <Tooltip title="Lịch sử sửa điểm" arrow>
                         <IconButton
