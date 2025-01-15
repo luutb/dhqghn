@@ -16,7 +16,7 @@ import {
 } from "@mui/material";
 import axiosInstance from "@/axios/api-config";
 import { useParams, useSearchParams } from "next/navigation";
-import { courses, updatePoint } from "@/axios/endpoints";
+import { approve, courses, historyDetail } from "@/axios/endpoints";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 
@@ -27,7 +27,7 @@ export default function HistoryDetail() {
   const params = useParams();
   const id = decodeURIComponent(params.id.toString());
   useEffect(() => {
-    axiosInstance.get(courses + "?id=" + id).then((response) => {
+    axiosInstance.get(historyDetail + "?id=" + id).then((response) => {
       setData(response.data.data);
       setStudents(response.data.data.students);
       setIsRefresh(false);
@@ -80,7 +80,15 @@ export default function HistoryDetail() {
   };
 
   const handleSubmit = async () => {
-    data.students = [...students];
+    axiosInstance.post(approve, { id: id }).then((response) =>{
+      if(response.data.data) {
+        toast.success("Đã duyệt thành công")
+      }
+      else{
+        toast.error("Đã có lỗi xảy ra")
+      }
+    })
+
     // let code = await localStorage.getItem("code");
     // let name = await localStorage.getItem("name");
     // Xử lý logic gửi dữ liệu khi người dùng nhấn "Lưu"
@@ -108,7 +116,7 @@ export default function HistoryDetail() {
     <div className="my-1 w-full px-4">
       <div className="bg-white p-4 rounded">
         <Typography variant="h4" component="h1" gutterBottom>
-          Danh sách thi
+          Lịch sử chỉnh sửa
         </Typography>
         <div className="flex flex-row justify-between">
           <Typography variant="h6" component="h2">
@@ -187,6 +195,7 @@ export default function HistoryDetail() {
                       )}`}
                     >
                       <TextField
+                        disabled={true}
                         size="small"
                         type="number"
                         inputProps={{ step: "0.1" }}
@@ -194,8 +203,8 @@ export default function HistoryDetail() {
                         onChange={(e) =>
                           handleScoreChange(row.codeStudent, e.target.value)
                         }
-                        onKeyDown={(e) => handleKeyDown(e, index)}
-                        inputRef={(el) => (textFieldRefs.current[index] = el)} // Lưu ref vào mảng
+                        onKeyDown={(e) => {}}
+                        inputRef={(el) =>{}} // Lưu ref vào mảng
                       />
                     </TableCell>
                     <TableCell>{row.notes}</TableCell>
@@ -211,7 +220,7 @@ export default function HistoryDetail() {
         className="mt-4"
         onClick={handleSubmit}
       >
-        Lưu
+        Phê duyệt
       </Button>
     </div>
   );

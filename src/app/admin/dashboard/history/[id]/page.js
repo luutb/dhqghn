@@ -290,7 +290,7 @@ function TableHistoryCourse() {
                     <TableCell>{exam.semester}</TableCell>
                     <TableCell>{exam.nameSchool}</TableCell>
                     <TableCell>
-                      <TableCell>{exam.nameEdit}</TableCell>
+                      <TableCell>{exam.nameEdit === "undefined" ? exam.idEdit : exam.nameEdit}</TableCell>
                     </TableCell>
 
                     <TableCell>

@@ -25,8 +25,12 @@ export default function PreviewCertificate() {
     axiosInstance.get(`${preview}?codeStudent=${id}`).then((res) => {
       console.log(res.data.data);
       if (res.data) {
-        setCoursesData(res.data.data.courses);
-        setStudent(res.data.data.profile);
+        if (res.data.data?.courses) {
+          setCoursesData(res.data.data.courses);
+        }
+        if (res.data.data?.profile) {
+          setStudent(res.data.data.profile);
+        }
       }
     });
   }, []);
@@ -51,41 +55,41 @@ export default function PreviewCertificate() {
               <TableCell className="font-bold">Tình trạng</TableCell>
             </TableRow>
           </TableHead>
-          <TableBody>
-            {coursesData.length > 0
-              ? coursesData.map((course) => (
-                  <TableRow
-                    key={course._id}
-                    className={`hover:bg-gray-100 transition-all duration-200 `}
-                  >
-                    <TableCell className=" font-bold">
-                      {course.nameCourse}
-                    </TableCell>
-                    <TableCell className=" font-bold">
-                      {course.codeCourse}
-                    </TableCell>
-                    <TableCell className="font-bold">
-                      {course.nameRoom}
-                    </TableCell>
-                    <TableCell className="font-bold">
-                      {course.nameSchool}
-                    </TableCell>
-                    <TableCell className="font-bold">{course.point}</TableCell>
-                    <TableCell className=" font-bold">
-                      <div
-                        className={`${
-                          Number(course.point) > 4
-                            ? "bg-green-500"
-                            : "bg-red-500"
-                        } text-white font-bold w-[80px] text-center rounded`}
-                      >
-                        {Number(course.point) > 4 ? "ĐẠT" : "CHƯA ĐẠT"}
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))
-              : null}
-          </TableBody>
+          {coursesData.length > 0 ? (
+            coursesData.map((course) => (
+              <TableBody>
+                <TableRow
+                  key={course._id}
+                  className={`hover:bg-gray-100 transition-all duration-200 `}
+                >
+                  <TableCell className=" font-bold">
+                    {course.nameCourse}
+                  </TableCell>
+                  <TableCell className=" font-bold">
+                    {course.codeCourse}
+                  </TableCell>
+                  <TableCell className="font-bold">{course.nameRoom}</TableCell>
+                  <TableCell className="font-bold">
+                    {course.nameSchool}
+                  </TableCell>
+                  <TableCell className="font-bold">{course.point}</TableCell>
+                  <TableCell className=" font-bold">
+                    <div
+                      className={`${
+                        Number(course.point) > 4 ? "bg-green-500" : "bg-red-500"
+                      } text-white font-bold w-[80px] text-center rounded`}
+                    >
+                      {Number(course.point) > 4 ? "ĐẠT" : "CHƯA ĐẠT"}
+                    </div>
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            ))
+          ) : (
+            <div className="flex h-screen justify-center">
+              Sinh viên chưa tham gia học
+            </div>
+          )}
         </Table>
       </TableContainer>
     </div>

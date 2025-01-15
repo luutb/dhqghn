@@ -3,7 +3,7 @@ import { getToken, removeToken } from './handle-token'; // Giả sử bạn có 
 
 const axiosInstance = axios.create({
   //https://db02.cvnl.me
-  baseURL:'http://localhost:3200', // Thay đổi thành API cơ sở của bạn
+  baseURL:'https://db02.cvnl.me', // Thay đổi thành API cơ sở của bạn
   timeout: 60000, // Thay đổi thời gian chờ nếu cần
   headers: {
     'Content-Type': 'application/json',

@@ -24,6 +24,8 @@ const createAcc = "/api/v1/createAccount";
 const historyEdit = "/api/v1/gethistory";
 const importSv = "/api/v1/importStudent";
 const report = "/api/v1/report";
+const historyDetail = "/api/v1/historyDetail";
+const approve = "/api/v1/acceptEditHistory"
 export {
   updatePoints,
   subjects,
@@ -51,4 +53,6 @@ export {
   historyEdit,
   importSv,
   report,
+  historyDetail,
+  approve
 };
