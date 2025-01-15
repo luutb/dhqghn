@@ -55,9 +55,9 @@ export default function PreviewCertificate() {
               <TableCell className="font-bold">Tình trạng</TableCell>
             </TableRow>
           </TableHead>
-          {coursesData.length > 0 ? (
-            coursesData.map((course) => (
-              <TableBody>
+          <TableBody>
+            {coursesData.length > 0 ? (
+              coursesData.map((course) => (
                 <TableRow
                   key={course._id}
                   className={`hover:bg-gray-100 transition-all duration-200 `}
@@ -83,13 +83,11 @@ export default function PreviewCertificate() {
                     </div>
                   </TableCell>
                 </TableRow>
-              </TableBody>
-            ))
-          ) : (
-            <div className="flex h-screen justify-center">
-              Sinh viên chưa tham gia học
-            </div>
-          )}
+              ))
+            ) : (
+              <div className="flex w-screen h-screen justify-center">Sinh viên chưa tham gia học</div>
+            )}
+          </TableBody>
         </Table>
       </TableContainer>
     </div>
