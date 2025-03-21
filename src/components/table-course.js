@@ -79,7 +79,7 @@ function TableCourse() {
   const fileInputRef = useRef(null);
   const [schools, setSchools] = useState([]);
   const [isStatus, setIsStatus] = useState(false);
-
+  const [role,setRole] = useState("")
   const [isCheckbox, setIsCheckbox] = useState([]);
   const handleFileChange = (e) => {
     uploadFile(e.target.files[0]);
@@ -119,6 +119,11 @@ function TableCourse() {
         });
     }
   }, [refresh]);
+  useEffect(() =>{
+    let role = localStorage.getItem("role")
+    setRole(role)
+
+  },[])
   const handleFind = () => {
     axiosInstance
       .get(
@@ -262,8 +267,6 @@ function TableCourse() {
     }
   };
   const handleSwitchCaseAll = (event) => {
-    console.log("event", event);
-
     let body = {
       ids: ids,
       status: event.target.checked,
@@ -281,13 +284,11 @@ function TableCourse() {
     let idState = [];
     isCheckbox[index] = event.target.checked;
     setIsCheckbox(isCheckbox);
-    console.log("ids", id);
     if (event.target.checked) {
       idState.push(id);
       setIds(idState);
     } else {
       const index = ids.findIndex((m) => m === id);
-      console.log("ids", index);
       if (index >= 0) {
         ids.splice(index, 1);
       }
@@ -466,14 +467,14 @@ function TableCourse() {
                           <GetAppIcon />
                         </IconButton>
                       </Tooltip>
-                      <Tooltip title="Lịch sử sửa điểm" arrow>
+                    {role == "admin" ?   <Tooltip title="Lịch sử sửa điểm" arrow>
                         <IconButton
                           onClick={() => navigationHistory(exam.id)}
                           color="error"
                         >
                           <HistoryIcon />
                         </IconButton>
-                      </Tooltip>
+                      </Tooltip> :null}
                     </TableCell>
                   </TableRow>
                 ))}

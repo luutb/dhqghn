@@ -186,7 +186,7 @@ const StudentList = () => {
       </h1>
       <div className="mb-6 flex w-[70%] flex-wrap gap-4 bg-white">
         <TextField
-          label="Tìm kiếm tên hoặc mã sinh viên"
+          label="Tìm kiếm mã sinh viên"
           variant="outlined"
           value={searchTerm}
           onChange={handleSearchChange}

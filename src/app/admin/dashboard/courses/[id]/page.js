@@ -34,7 +34,7 @@ export default function Home() {
 
       setIsRefresh(false);
     });
-  }, []);
+  }, [id]);
   useEffect(() => {
     if (isRefresh) {
       axiosInstance.get(courses + "?id=" + id).then((response) => {
