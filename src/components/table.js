@@ -35,6 +35,8 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { Upload as UploadIcon } from "@mui/icons-material";
 import moment from "moment";
+import {TablePagination} from '@mui/material';
+
 const initialStudents = [
   {
     id: "S001",
@@ -320,8 +322,10 @@ const StudentList = () => {
               ))}
             </TableBody>
           </Table>
+         
         </TableContainer>
       )}
+       <TablePagination count = {3} page ={1} onPageChange ={() =>{}} rowsPerPage = {0}/>
     </div>
   );
 };

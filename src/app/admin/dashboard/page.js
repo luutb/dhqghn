@@ -19,9 +19,9 @@ export default function Dashboard() {
             <SchoolTable />
           </div> */}
         </div>
-        <div className="w-[400px]">
+        {/* <div className="w-[400px]">
           <DailySchedule />
-        </div>
+        </div> */}
       </div>
     </div>
   );

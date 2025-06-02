@@ -3,7 +3,7 @@ import { getToken, removeToken } from './handle-token'; // Giả sử bạn có 
 
 const axiosInstance = axios.create({
   //https://db02.cvnl.me
-  baseURL:'https://db02.cvnl.me', // Thay đổi thành API cơ sở của bạn
+  baseURL:'http://103.75.185.135/api', // Thay đổi thành API cơ sở của bạn
   timeout: 60000, // Thay đổi thời gian chờ nếu cần
   headers: {
     'Content-Type': 'application/json',
@@ -31,11 +31,7 @@ axiosInstance.interceptors.response.use(
   },
   async error => {
     if (error.response && error.response.status === 401) {
-      // Xử lý lỗi xác thực (ví dụ: token hết hạn)
-      // Có thể thực hiện việc đăng xuất người dùng và xóa token
-      removeToken(); // Giả sử bạn có hàm này để xóa token
-      // Hoặc chuyển hướng người dùng đến trang đăng nhập
-      // window.location.href = '/login';
+      removeToken();
     }
     return Promise.reject(error);
   }

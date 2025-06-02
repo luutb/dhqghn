@@ -25,6 +25,7 @@ import {
   Select,
   TextField,
   Tooltip,
+  TablePagination,
 } from "@mui/material";
 import Checkbox from "@mui/material/Checkbox";
 
@@ -79,7 +80,7 @@ function TableCourse() {
   const fileInputRef = useRef(null);
   const [schools, setSchools] = useState([]);
   const [isStatus, setIsStatus] = useState(false);
-  const [role,setRole] = useState("")
+  const [role, setRole] = useState("");
   const [isCheckbox, setIsCheckbox] = useState([]);
   const handleFileChange = (e) => {
     uploadFile(e.target.files[0]);
@@ -119,11 +120,10 @@ function TableCourse() {
         });
     }
   }, [refresh]);
-  useEffect(() =>{
-    let role = localStorage.getItem("role")
-    setRole(role)
-
-  },[])
+  useEffect(() => {
+    let role = localStorage.getItem("role");
+    setRole(role);
+  }, []);
   const handleFind = () => {
     axiosInstance
       .get(
@@ -154,7 +154,10 @@ function TableCourse() {
 
           // Gắn tên tệp từ `Content-Disposition` header
           const contentDisposition = response.headers["content-disposition"];
-          let fileName = `${exam.codeCourse}-${exam.nameSchool.replaceAll(" ","_")}.xlsx`;
+          let fileName = `${exam.codeCourse}-${exam.nameSchool.replaceAll(
+            " ",
+            "_"
+          )}.xlsx`;
 
           if (contentDisposition && contentDisposition.includes("filename=")) {
             fileName = contentDisposition
@@ -467,20 +470,28 @@ function TableCourse() {
                           <GetAppIcon />
                         </IconButton>
                       </Tooltip>
-                    {role == "admin" ?   <Tooltip title="Lịch sử sửa điểm" arrow>
-                        <IconButton
-                          onClick={() => navigationHistory(exam.id)}
-                          color="error"
-                        >
-                          <HistoryIcon />
-                        </IconButton>
-                      </Tooltip> :null}
+                      {role == "admin" ? (
+                        <Tooltip title="Lịch sử sửa điểm" arrow>
+                          <IconButton
+                            onClick={() => navigationHistory(exam.id)}
+                            color="error"
+                          >
+                            <HistoryIcon />
+                          </IconButton>
+                        </Tooltip>
+                      ) : null}
                     </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
           </TableContainer>
+          <TablePagination
+            count={3}
+            page={1}
+            onPageChange={() => {}}
+            rowsPerPage={0}
+          />
         </Paper>
       </Box>
 
