@@ -157,7 +157,9 @@ const StudentList = () => {
 
     axiosInstance.get(findStudent, { params: body }).then((response) => {
       if (response && response.data && response.data.data) {
-        setStudents([...response.data.data]);
+        setStudents([...response.data.data.students]);
+        setPage(1);
+        setPageSize(response.data.data.pageSize)
       } else {
         setStudents([]);
       }
