@@ -35,7 +35,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { Upload as UploadIcon } from "@mui/icons-material";
 import moment from "moment";
-import {TablePagination} from '@mui/material';
+import { TablePagination } from "@mui/material";
 
 const initialStudents = [
   {
@@ -72,22 +72,24 @@ const StudentList = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedSchool, setSelectedSchool] = useState(null);
   const [selectedCohort, setSelectedCohort] = useState(null);
+  const [page, setPage] = useState(1);
+  const [pageSize,setPageSize] = useState(1)
   const { showLoading, hideLoading, loading } = useLoading();
   const router = useRouter();
   const fileInputRef = useRef(null);
-  useEffect(() => {
-    showLoading();
-    axiosInstance
-      .get(liststudent)
-      .then((response) => {
-        if (response && response.data && response.data.data) {
-          setStudents(response.data.data);
-        }
-      })
-      .finally(() => {
-        hideLoading();
-      });
-  }, []);
+  // useEffect(() => {
+  //   showLoading();
+  //   axiosInstance
+  //     .get(liststudent)
+  //     .then((response) => {
+  //       if (response && response.data && response.data.data) {
+  //         setStudents(response.data.data);
+  //       }
+  //     })
+  //     .finally(() => {
+  //       hideLoading();
+  //     });
+  // }, []);
   useEffect(() => {
     axiosInstance.get(universitys).then((response) => {
       if (response && response.data && response.data.data) {
@@ -96,6 +98,25 @@ const StudentList = () => {
     });
   }, []);
 
+  useEffect(() => {
+    showLoading();
+    let body = {
+      nameStudent: searchTerm,
+      university: selectedSchool?.code ?? "",
+      scholastic: selectedCohort ?? 0,
+      page: page,
+    };
+
+    axiosInstance.get(findStudent, { params: body }).then((response) => {
+      if (response && response.data && response.data.data) {
+        setStudents([...response.data.data.students]);
+        setPageSize(Math.ceil(response.data.data.pageSize / 50))
+      } else {
+        setStudents([]);
+      }
+      hideLoading();
+    });
+  }, [page]);
   const handleFileChange = (e) => {
     uploadFile(e.target.files[0]);
   };
@@ -126,20 +147,21 @@ const StudentList = () => {
     }
   };
   const handleFind = () => {
-    showLoading()
+    showLoading();
     let body = {
       nameStudent: searchTerm,
       university: selectedSchool?.code ?? "",
       scholastic: selectedCohort ?? 0,
+      page: 1,
     };
 
-    axiosInstance.post(findStudent, body).then((response) => {
+    axiosInstance.get(findStudent, { params: body }).then((response) => {
       if (response && response.data && response.data.data) {
         setStudents([...response.data.data]);
       } else {
         setStudents([]);
       }
-      hideLoading()
+      hideLoading();
     });
   };
   const handleSearchChange = (event) => {
@@ -263,7 +285,10 @@ const StudentList = () => {
         </Box>
       </div>
       {loading ? (
-        <div className="flex justify-center items-center"> <CircularProgress /></div>
+        <div className="flex justify-center items-center">
+          {" "}
+          <CircularProgress />
+        </div>
       ) : (
         <TableContainer component={Paper} className="shadow-lg">
           <Table>
@@ -322,10 +347,16 @@ const StudentList = () => {
               ))}
             </TableBody>
           </Table>
-         
         </TableContainer>
       )}
-       <TablePagination count = {3} page ={1} onPageChange ={() =>{}} rowsPerPage = {0}/>
+      <TablePagination
+        count={pageSize}
+        page={page}
+        onPageChange={(event, page) => {
+          setPage(page);
+        }}
+        rowsPerPage={0}
+      />
     </div>
   );
 };
